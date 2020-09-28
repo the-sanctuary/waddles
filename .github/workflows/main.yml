@@ -24,10 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: actions/checkout@master
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
         
       # Setup a Go environment and add it to the PATH
       - name: Setup Go environment
@@ -38,3 +34,12 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: go test -race -coverprofile=coverage.txt -covermode=atomic
+
+      # Upload coverate to CodeCov
+      - name: Upload coverage to CodeCov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          name: codecov-umbrella
+          fail_ci_if_error: true
