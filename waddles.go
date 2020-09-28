@@ -13,6 +13,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/handlers"
+	"github.com/the-sanctuary/waddles/util"
 )
 
 // ConfigDatabase holds bot config information
