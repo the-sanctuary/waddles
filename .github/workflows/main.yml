@@ -31,9 +31,14 @@ jobs:
         with:
           go-version: '^1.15.0'
 
-  
+      # Setup CodeCov Token
+      - name: Setup CodeCov Token
+        run: export CODECOV_TOKEN="77778742-4fee-4eb2-a951-992f1cedb7f0"
+
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: export CODECOV_TOKEN="77778742-4fee-4eb2-a951-992f1cedb7f0"
         run: go test -race -coverprofile=coverage.txt -covermode=atomic
+
+      # Send test coverage to CodeCov
+      - name: Send coverage to CodeCov
         run: bash <(curl -s https://codecov.io/bash)
