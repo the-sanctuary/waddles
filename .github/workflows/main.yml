@@ -8,6 +8,7 @@ on:
   push:
     branches: 
     - master
+    - codecov
   pull_request:
     branches: 
     - master
@@ -33,4 +34,6 @@ jobs:
   
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: go test
+        run: export CODECOV_TOKEN="77778742-4fee-4eb2-a951-992f1cedb7f0"
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic
+        run: bash <(curl -s https://codecov.io/bash)
