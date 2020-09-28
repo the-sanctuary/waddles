@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"testing"
@@ -7,13 +7,13 @@ import (
 )
 
 func TestGetToken(t *testing.T) {
-	token := getToken("example.token")
+	token := util.getToken("example.token")
 
 	assert.Equal(t, "<BOT-TOKEN-GOES-HERE>", token)
 }
 
 func TestGetTokenSad(t *testing.T) {
-	token := getToken(".gitignore")
+	token := util.getToken(".gitignore")
 
 	assert.Equal(t, "", token)
 }
