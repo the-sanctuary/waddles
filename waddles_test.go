@@ -7,9 +7,9 @@ import (
 )
 
 func TestGetToken(t *testing.T) {
-	token := getToken("test.token")
+	token := getToken("example.token")
 
-	assert.Equal(t, "blahblahtesting123", token)
+	assert.Equal(t, "<BOT-TOKEN-GOES-HERE>", token)
 }
 
 func TestGetTokenSad(t *testing.T) {
