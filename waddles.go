@@ -12,6 +12,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/handlers"
 )
 
 type ConfigDatabase struct {
@@ -84,6 +85,9 @@ func main() {
 		log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
+
+	// Register handlers
+	dg.AddHandler(handlers.MsgHandler)
 
 	// Open a websocket connection to Discord and start listening
 	err = dg.Open()
