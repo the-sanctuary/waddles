@@ -26,6 +26,7 @@ var token string
 
 func getToken(filepath string) string {
 	file, err := os.Open(filepath)
+
 	if err != nil {
 		log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
 		log.Debug().Msg("[IERR] " + err.Error())
@@ -45,8 +46,7 @@ func getToken(filepath string) string {
 }
 
 func main() {
-	// Set output for zerolog
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	util.SetupLogging()
 
 	// Read in environment variables, and set the log level
 	err := cleanenv.ReadEnv(&cfg)
