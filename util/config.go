@@ -60,27 +60,31 @@ func ReadConfig() {
 			filepath = os.Args[1]
 		}
 
-		Cfg.Token = getToken(filepath)
+		Cfg.Token, err = getToken(filepath)
+
+		if DebugError(err) {
+			log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
+			log.Debug().Msg("[IERR] " + err.Error())
+			os.Exit(1)
+		}
 	}
 }
 
-func getToken(filepath string) string {
+func getToken(filepath string) (string, error) {
 	file, err := os.Open(filepath)
 
-	if DebugError(err) {
-		log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
-		log.Debug().Msg("[IERR] " + err.Error())
-		os.Exit(1)
+	if err != nil {
+		return "", err
 	}
+
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
 		if strings.Split(scanner.Text(), "=")[0] == "token" {
-			return strings.Split(scanner.Text(), "=")[1]
+			return strings.Split(scanner.Text(), "=")[1], nil
 		}
 	}
-
-	return ""
+	return "", err
 }
