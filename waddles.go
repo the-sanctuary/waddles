@@ -1,97 +1,24 @@
 package main
 
 import (
-	"bufio"
 	"os"
 	"os/signal"
-	"strconv"
-	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/handlers"
 	"github.com/the-sanctuary/waddles/util"
 )
 
-// ConfigDatabase holds bot config information
-type ConfigDatabase struct {
-	Debug int    `env:"WADLDEBUG" env-default:"1"`
-	Token string `env:"WADLTOKEN" env-default:""`
-}
-
-var cfg ConfigDatabase
-var token string
-
-func getToken(filepath string) string {
-	file, err := os.Open(filepath)
-
-	if err != nil {
-		log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
-		log.Debug().Msg("[IERR] " + err.Error())
-		os.Exit(1)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		if strings.Split(scanner.Text(), "=")[0] == "token" {
-			return strings.Split(scanner.Text(), "=")[1]
-		}
-	}
-
-	return ""
-}
-
 func main() {
+	util.ReadConfig()
+
 	util.SetupLogging()
 
-	// Read in environment variables, and set the log level
-	err := cleanenv.ReadEnv(&cfg)
-	if err != nil {
-		log.Info().Msg("[CONF] Unable to read in environment variables.  Continuing with defaults.")
-	}
-
-	debugString := "[CONF] Debug Level: "
-	switch cfg.Debug {
-	case 0:
-		zerolog.SetGlobalLevel(zerolog.WarnLevel)
-		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Silent.")
-		break
-	case 1:
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Info.")
-		break
-	case 2:
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Debug.")
-		break
-	default:
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Invalid.  Using Debug Level: 1, Info.")
-		break
-	}
-
-	// Get the token from an environment variable or a token file
-	if len(cfg.Token) > 0 {
-		token = cfg.Token
-	} else {
-		// Get filepath for token
-		filepath := "./waddles.token"
-
-		if len(os.Args) > 1 {
-			filepath = os.Args[1]
-		}
-
-		token = getToken(filepath)
-	}
-
 	// Create a Discord session using our bot token (client secret)
-	dg, err := discordgo.New("Bot " + token)
-	if err != nil {
+	dg, err := discordgo.New("Bot " + util.Cfg.Token)
+	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
 		log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
@@ -102,7 +29,7 @@ func main() {
 
 	// Open a websocket connection to Discord and start listening
 	err = dg.Open()
-	if err != nil {
+	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to open a connection to Discord.  Quitting....")
 		log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
