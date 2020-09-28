@@ -15,6 +15,7 @@ import (
 	"github.com/the-sanctuary/waddles/handlers"
 )
 
+// ConfigDatabase holds bot config information
 type ConfigDatabase struct {
 	Debug int    `env:"WADLDEBUG" env-default:"1"`
 	Token string `env:"WADLTOKEN" env-default:""`
@@ -23,7 +24,7 @@ type ConfigDatabase struct {
 var cfg ConfigDatabase
 var token string
 
-func getToken(filepath string) {
+func getToken(filepath string) string {
 	file, err := os.Open(filepath)
 	if err != nil {
 		log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
@@ -33,9 +34,14 @@ func getToken(filepath string) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+
 	for scanner.Scan() {
-		token = strings.Split(scanner.Text(), "=")[1]
+		if strings.Split(scanner.Text(), "=")[0] == "token" {
+			return strings.Split(scanner.Text(), "=")[1]
+		}
 	}
+
+	return ""
 }
 
 func main() {
@@ -47,22 +53,24 @@ func main() {
 	if err != nil {
 		log.Info().Msg("[CONF] Unable to read in environment variables.  Continuing with defaults.")
 	}
+
+	debugString := "[CONF] Debug Level: "
 	switch cfg.Debug {
 	case 0:
 		zerolog.SetGlobalLevel(zerolog.WarnLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(cfg.Debug) + ", Silent.")
+		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Silent.")
 		break
 	case 1:
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(cfg.Debug) + ", Info.")
+		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Info.")
 		break
 	case 2:
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(cfg.Debug) + ", Debug.")
+		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Debug.")
 		break
 	default:
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(cfg.Debug) + ", Invalid.  Using Debug Level: 1, Info.")
+		log.Info().Msg(debugString + strconv.Itoa(cfg.Debug) + ", Invalid.  Using Debug Level: 1, Info.")
 		break
 	}
 
@@ -72,10 +80,12 @@ func main() {
 	} else {
 		// Get filepath for token
 		filepath := "./waddles.token"
+
 		if len(os.Args) > 1 {
 			filepath = os.Args[1]
 		}
-		getToken(filepath)
+
+		token = getToken(filepath)
 	}
 
 	// Create a Discord session using our bot token (client secret)
