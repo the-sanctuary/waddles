@@ -12,9 +12,9 @@ import (
 )
 
 func main() {
-	util.SetupLogging()
+	util.InitializeLogging()
 	util.ReadConfig()
-	util.SetupLogging() //TODO: this is a lazy fix for the circular dependency of SetupLogging and ReadConfig
+	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)
 	dg, err := discordgo.New("Bot " + util.Cfg.Token)

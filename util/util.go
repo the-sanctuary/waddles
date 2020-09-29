@@ -13,11 +13,14 @@ var (
 	errorLogger errlog.Logger
 )
 
-//SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
-func SetupLogging() {
+//InitializeLogging inits basic logging capabilities
+func InitializeLogging() {
 	//set pretty console output for zerolog
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC1123Z})
+}
 
+//SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
+func SetupLogging() {
 	if Cfg.Debug == 2 {
 		errorLogger = errlog.NewLogger(&errlog.Config{
 			PrintFunc:          log.Error().Msgf,

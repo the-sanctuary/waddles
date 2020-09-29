@@ -62,7 +62,7 @@ func ReadConfig() {
 
 		Cfg.Token, err = getToken(filepath)
 
-		if DebugError(err) {
+		if err != nil {
 			log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
 			log.Debug().Msg("[IERR] " + err.Error())
 			os.Exit(1)
