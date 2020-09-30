@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -18,9 +17,10 @@ var (
 
 // ConfigDatabase holds bot config information
 type ConfigDatabase struct {
-	Debug     int    `env:"WADL_DEBUG" env-default:"1"`
-	Token     string `env:"WADL_TOKEN" env-default:""`
-	TokenFile string `env:"WADL_TOKEN" env-default:"./waddles.token"`
+	LogLevel       zerolog.Level
+	LogLevelString string `env:"WADL_DEBUG" env-default:"info"`
+	Token          string `env:"WADL_TOKEN" env-default:""`
+	TokenFile      string `env:"WADL_TOKEN_FILE" env-default:"./waddles.token"`
 }
 
 //ReadConfig parses config options from the environment and config file into a ConfigDatabase struct
@@ -32,24 +32,16 @@ func ReadConfig() {
 		log.Info().Msg("[CONF] Unable to read in environment variables.  Continuing with defaults.")
 	}
 
-	switch Cfg.Debug {
-	case 0:
-		zerolog.SetGlobalLevel(zerolog.WarnLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(Cfg.Debug) + ", Silent.")
-		break
-	case 1:
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(Cfg.Debug) + ", Info.")
-		break
-	case 2:
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(Cfg.Debug) + ", Debug.")
-		break
-	default:
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Info().Msg("[CONF] Debug Level: " + strconv.Itoa(Cfg.Debug) + ", Invalid.  Using Debug Level: 1, Info.")
-		break
+	//parse zerolog.Level from Cfg.Debug
+	Cfg.LogLevel, err = zerolog.ParseLevel(Cfg.LogLevelString)
+	log.Info().Msgf("[LOG] Log Level set to: %s", Cfg.LogLevelString)
+
+	if err != nil {
+		log.Info().Msgf("[CONF] Supplied debugging log level (%s) is invalid. Defaulting to \"info\".", Cfg.LogLevelString)
 	}
+
+	// Set global log level
+	zerolog.SetGlobalLevel(Cfg.LogLevel)
 
 	// If token wasn't provided via env/config file, read it from a token file
 	if len(Cfg.Token) == 0 {

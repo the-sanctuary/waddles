@@ -2,6 +2,8 @@ package util
 
 import (
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -16,12 +18,12 @@ var (
 //InitializeLogging inits basic logging capabilities
 func InitializeLogging() {
 	//set pretty console output for zerolog
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC1123Z})
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC1123Z})
 }
 
 //SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
 func SetupLogging() {
-	if Cfg.Debug == 2 {
+	if Cfg.LogLevel <= zerolog.DebugLevel {
 		errorLogger = errlog.NewLogger(&errlog.Config{
 			PrintFunc:          log.Error().Msgf,
 			LinesBefore:        6,
@@ -43,4 +45,13 @@ func SetupLogging() {
 // DebugError handles an error with errlog (& zerolog)
 func DebugError(err error) bool {
 	return errorLogger.Debug(err)
+}
+
+//RegisterTermSignals  -
+func RegisterTermSignals() {
+	// Register term signals
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
 }
