@@ -2,12 +2,10 @@ package main
 
 import (
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/handlers"
+	"github.com/the-sanctuary/waddles/handler"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -33,20 +31,10 @@ func main() {
 	defer session.Close()
 
 	// Register handlers
-	session.AddHandler(debugAllMessages)
+	session.AddHandler(handler.TraceAllMessages)
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 
 	util.RegisterTermSignals()
-}
-
-func debugAllMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-	log.Trace().Msgf("Message Recieved: %d", m.Message)
 }
