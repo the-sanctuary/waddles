@@ -2,12 +2,9 @@ package main
 
 import (
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/handlers"
 	"github.com/the-sanctuary/waddles/util"
 )
 
