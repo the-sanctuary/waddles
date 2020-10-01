@@ -23,7 +23,7 @@ func InitializeLogging() {
 
 //SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
 func SetupLogging() {
-	if parseLogLevel(Cfg.Wadl.LogLevel) <= zerolog.DebugLevel {
+	if zerolog.GlobalLevel() <= zerolog.DebugLevel {
 		errorLogger = errlog.NewLogger(&errlog.Config{
 			PrintFunc:          log.Error().Msgf,
 			LinesBefore:        6,

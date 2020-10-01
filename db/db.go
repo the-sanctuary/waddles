@@ -15,17 +15,25 @@ type wadldata struct {
 }
 
 func NewWadlDB() wadldata {
-	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
-		util.Cfg.Db.User,
-		util.Cfg.Db.Pass,
-		util.Cfg.Db.Host,
-		util.Cfg.Db.Port,
-		util.Cfg.Db.Name,
-	)
+	var dsn string
+
+	if util.Cfg.Db.URL == "" {
+		dsn = fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+			util.Cfg.Db.User,
+			util.Cfg.Db.Pass,
+			util.Cfg.Db.Host,
+			util.Cfg.Db.Port,
+			util.Cfg.Db.Name,
+		)
+	} else {
+		dsn = util.Cfg.Db.URL
+	}
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
+
+	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to open connection to database.  Quitting....")
-		log.Debug().Msg("[IERR] " + err.Error())
+		// log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
 	return wadldata{DB: db}

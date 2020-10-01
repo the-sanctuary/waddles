@@ -1,5 +1,5 @@
 [wadl]
-lglvl = 1
+lglvl = "info"
 prefx = "!"
 token = "<bot-token>"
 
