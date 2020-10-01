@@ -19,10 +19,16 @@ var (
 type Config struct {
 	Wadl struct {
 		LogLevel int    `toml:"lglvl" env-default:"1"`
-		Sqldb    string `toml:"sqldb" env-default:"postgresql://waddles@localhost:5432/waddles"`
 		Prefx    string `toml:"prefx" env-default:"!"`
 		Token    string `toml:"token" env-default:""`
 	} `toml:"wadl"`
+	Db struct {
+		User string `toml:"user" env-default:"waddles"`
+		Pass string `toml:"pass" env-default:""`
+		Host string `toml:"host" env-default:"localhost"`
+		Port string `toml:"port" env-default:"5432"`
+		Name string `toml:"name" env-default:"waddles"`
+	} `toml:"db"`
 }
 
 //ReadConfig parses config options from the environment and config file into a ConfigDatabase struct
