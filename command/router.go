@@ -69,7 +69,7 @@ func (r *router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		if correct {
 			cmd, args := findDeepestCommand(cmd, split)
 			ctx := buildContext(session, message, cmd, args)
-			cmd.Handler(&ctx)
+			go cmd.Handler(&ctx)
 		}
 	}
 }
