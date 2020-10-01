@@ -10,18 +10,30 @@ import (
 )
 
 //Router is the central command multiplexer
-type Router struct {
+type router struct {
 	Commands []*Command
 	Prefix   string
 }
 
+func BuildRouter() router {
+	r := router{
+		Prefix: "~",
+	}
+	r.RegisterCommands(
+		ping,
+	)
+	return r
+}
+
 //RegisterCommand adds a command to the Router
-func (r *Router) RegisterCommand(cmd *Command) {
-	r.Commands = append(r.Commands, cmd)
+func (r *router) RegisterCommands(cmds ...*Command) {
+	for _, c := range cmds {
+		r.Commands = append(r.Commands, c)
+	}
 }
 
 //Handler returns the func that deals with command delegates execution to command
-func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
+func (r *router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 	return func(session *discordgo.Session, message *discordgo.MessageCreate) {
 		log.Trace().Msg("Entering Router Handler")
 		defer log.Trace().Msg("Exiting Router Handler")
@@ -45,20 +57,33 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		}
 
 		//working setup for base commands
-		trigger := strings.SplitN(message.Content, " ", 2)[0][1:]
-		correct, cmd := triggerCheck(trigger, r.Commands)
+		// trigger := strings.SplitN(message.Content, " ", 2)[0][1:]
+		// correct, cmd := triggerCheck(trigger, r.Commands)
+		// args := strings.Split(message.Content, " ")
 
-		log.Trace().Msgf("trigger: %s, correct: %s, cmd: %s", trigger, correct, cmd.Name)
+		// log.Trace().Msgf("trigger: %s, correct: %t, cmd: %s", trigger, correct, cmd.Name)
+
+		split := strings.Split(message.Content[len(r.Prefix):], " ")
+		correct, cmd := triggerCheck(split[0], r.Commands)
 
 		if correct {
-			ctx := buildContext(session, message, cmd)
+			cmd, args := findDeepestCommand(cmd, split)
+			ctx := buildContext(session, message, cmd, args)
 			cmd.Handler(&ctx)
 		}
 	}
 }
 
-func findDeepestHandler(message string, trigger string) {
-
+func findDeepestCommand(prevCmd *Command, args []string) (*Command, []string) {
+	if len(prevCmd.SubCommands) > 0 {
+		if len(args) > 1 {
+			found, cmd := triggerCheck(args[1], prevCmd.SubCommands)
+			if found {
+				return findDeepestCommand(cmd, args[1:])
+			}
+		}
+	}
+	return prevCmd, args[1:]
 }
 
 func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
@@ -74,11 +99,12 @@ func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
 	return false, nil
 }
 
-func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, command *Command) Context {
+func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string) Context {
 	return *&Context{
 		Session: session,
 		Message: message,
 		Command: command,
+		Args:    args,
 	}
 }
 

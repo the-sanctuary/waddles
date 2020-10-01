@@ -23,6 +23,8 @@ type Context struct {
 	Message *discordgo.MessageCreate
 	//The command being executed
 	Command *Command
+	//Command args (i.e. the split message content)
+	Args []string
 }
 
 //Triggers returns all strings (the command name and any aliases) that trigger this command

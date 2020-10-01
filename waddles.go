@@ -31,7 +31,7 @@ func main() {
 	}
 	defer session.Close()
 
-	router := buildRouter()
+	router := command.BuildRouter()
 
 	// Register handlers
 	session.AddHandler(handler.TraceAllMessages)
@@ -41,12 +41,4 @@ func main() {
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 
 	util.RegisterTermSignals()
-}
-
-func buildRouter() command.Router {
-	router := command.Router{
-		Prefix: "~",
-	}
-	router.RegisterCommand(command.Ping)
-	return router
 }
