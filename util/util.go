@@ -55,3 +55,13 @@ func RegisterTermSignals() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 }
+
+//SliceContains returns true if val is included in
+func SliceContains(slice []string, str string) bool {
+	for _, v := range slice {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}

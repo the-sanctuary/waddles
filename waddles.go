@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/command"
 	"github.com/the-sanctuary/waddles/handler"
 	"github.com/the-sanctuary/waddles/util"
 )
@@ -30,11 +31,22 @@ func main() {
 	}
 	defer session.Close()
 
+	router := buildRouter()
+
 	// Register handlers
 	session.AddHandler(handler.TraceAllMessages)
+	session.AddHandler(router.Handler())
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 
 	util.RegisterTermSignals()
+}
+
+func buildRouter() command.Router {
+	router := command.Router{
+		Prefix: "~",
+	}
+	router.RegisterCommand(command.Ping)
+	return router
 }
