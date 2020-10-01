@@ -2,23 +2,12 @@ package main
 
 import (
 	"os"
-	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/util"
-	"gorm.io/gorm"
 )
-
-type test struct {
-	gorm.Model
-	Col1 int
-}
-
-type Tabler interface {
-	TableName() string
-}
 
 func main() {
 	util.InitializeLogging()
@@ -42,14 +31,7 @@ func main() {
 	defer session.Close()
 
 	// Open connection to database
-	wd := db.NewWadlDB()
-	wd.DB.AutoMigrate(&test{})
-
-	var t test
-	//wd.DB.First(&t)
-	wd.DB.Create(&test{Col1: 20})
-	wd.DB.Raw("SELECT * FROM test WHERE col1 = ?", 20).Scan(&t)
-	log.Info().Msg("VALUE: " + strconv.Itoa(t.Col1))
+	_ = db.NewWadlDB()
 
 	// Register handlers
 	session.AddHandler(debugAllMessages)
@@ -67,10 +49,5 @@ func debugAllMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	log.Trace().Msgf("Message Recieved: %d", m.Message)
-}
-
-// TableName overrides the table name used by User to `profiles`
-func (test) TableName() string {
-	return "test"
+	log.Trace().Msgf("Message Recieved: %s", m.Message.Content)
 }
