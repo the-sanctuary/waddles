@@ -1,0 +1,5 @@
+[wadl]
+lglvl = 1
+sqldb = "postgresql://waddles:<secret>@localhost:5432/waddles"
+prefx = "!"
+token = "<bot-token>"

@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -14,7 +15,7 @@ func main() {
 	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)
-	session, err := discordgo.New("Bot " + util.Cfg.Token)
+	session, err := discordgo.New("Bot " + util.Cfg.Wadl.Token)
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
 		log.Debug().Msg("[IERR] " + err.Error())
@@ -28,6 +29,9 @@ func main() {
 		os.Exit(1)
 	}
 	defer session.Close()
+
+	// Open connection to database
+	_ = db.NewWadlDB()
 
 	// Register handlers
 	session.AddHandler(debugAllMessages)
@@ -45,5 +49,5 @@ func debugAllMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	log.Trace().Msgf("Message Recieved: %d", m.Message)
+	log.Trace().Msgf("Message Recieved: %s", m.Message.Content)
 }
