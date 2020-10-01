@@ -11,55 +11,59 @@ import (
 )
 
 var (
-	//Cfg holds the current config information in a ConfigDatabase struct
-	Cfg ConfigDatabase
+	//Cfg holds the current config information in a Config struct
+	Cfg Config
 )
 
 // ConfigDatabase holds bot config information
-type ConfigDatabase struct {
-	LogLevel       zerolog.Level
-	LogLevelString string `env:"WADL_DEBUG" env-default:"info"`
-	Token          string `env:"WADL_TOKEN" env-default:""`
-	TokenFile      string `env:"WADL_TOKEN_FILE" env-default:"./waddles.token"`
+type Config struct {
+	Wadl struct {
+		LogLevel int    `toml:"lglvl" env-default:"1"`
+		Sqldb    string `toml:"sqldb" env-default:"postgresql://waddles@localhost:5432/waddles"`
+		Prefx    string `toml:"prefx" env-default:"!"`
+		Token    string `toml:"token" env-default:""`
+	} `toml:"wadl"`
 }
 
 //ReadConfig parses config options from the environment and config file into a ConfigDatabase struct
 func ReadConfig() {
 	// Read in environment variables, and set the log level
-	err := cleanenv.ReadEnv(&Cfg)
+	err := cleanenv.ReadConfig("./waddles.toml", &Cfg)
 
 	if err != nil {
 		log.Info().Msg("[CONF] Unable to read in environment variables.  Continuing with defaults.")
 	}
 
 	//parse zerolog.Level from Cfg.Debug
-	Cfg.LogLevel, err = zerolog.ParseLevel(Cfg.LogLevelString)
-	log.Info().Msgf("[LOG] Log Level set to: %s", Cfg.LogLevelString)
+	globalLevel := parseLogLevel(Cfg.Wadl.LogLevel)
+
+	log.Info().Msgf("[LOG] Log Level set to: %s", globalLevel.String())
 
 	if err != nil {
-		log.Info().Msgf("[CONF] Supplied debugging log level (%s) is invalid. Defaulting to \"info\".", Cfg.LogLevelString)
+		log.Info().Msgf("[CONF] Supplied debugging log level (%d) is invalid. Defaulting to \"info\".", Cfg.Wadl.LogLevel)
 	}
 
 	// Set global log level
-	zerolog.SetGlobalLevel(Cfg.LogLevel)
+	zerolog.SetGlobalLevel(globalLevel)
+}
 
-	// If token wasn't provided via env/config file, read it from a token file
-	if len(Cfg.Token) == 0 {
-		// Get filepath for token
-		filepath := "./waddles.token"
-
-		if len(os.Args) > 1 {
-			filepath = os.Args[1]
-		}
-
-		Cfg.Token, err = getToken(filepath)
-
-		if err != nil {
-			log.Info().Msg("[CONF] Unable to open token file for reading.  Quitting...")
-			log.Debug().Msg("[IERR] " + err.Error())
-			os.Exit(1)
-		}
+func parseLogLevel(lglvl int) zerolog.Level {
+	var final zerolog.Level = zerolog.InfoLevel
+	switch lglvl {
+	case 0:
+		final = zerolog.WarnLevel
+		break
+	case 1:
+		final = zerolog.InfoLevel
+		break
+	case 2:
+		final = zerolog.DebugLevel
+		break
+	default:
+		final = zerolog.InfoLevel
+		break
 	}
+	return final
 }
 
 func getToken(filepath string) (string, error) {

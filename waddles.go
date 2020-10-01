@@ -14,7 +14,7 @@ func main() {
 	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)
-	session, err := discordgo.New("Bot " + util.Cfg.Token)
+	session, err := discordgo.New("Bot " + util.Cfg.Wadl.Token)
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
 		log.Debug().Msg("[IERR] " + err.Error())
