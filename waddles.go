@@ -5,6 +5,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/command"
+	"github.com/the-sanctuary/waddles/handler"
 	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/util"
 )
@@ -30,24 +32,16 @@ func main() {
 	}
 	defer session.Close()
 
+	router := command.BuildRouter()
 	// Open connection to database
 	_ = db.NewWadlDB()
 
 	// Register handlers
-	session.AddHandler(debugAllMessages)
+	session.AddHandler(handler.TraceAllMessages)
+	session.AddHandler(router.Handler())
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 
 	util.RegisterTermSignals()
-}
-
-func debugAllMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-	log.Trace().Msgf("Message Recieved: %s", m.Message.Content)
 }

@@ -13,13 +13,13 @@ require (
 	github.com/onsi/ginkgo v1.14.1 // indirect
 	github.com/onsi/gomega v1.10.2 // indirect
 	github.com/rs/zerolog v1.20.0
-	github.com/sirupsen/logrus v1.6.0 // indirect
+	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/snwfdhmp/errlog v0.0.0-20200925125138-ded779345378
 	github.com/spf13/afero v1.4.0 // indirect
 	github.com/stretchr/testify v1.6.1
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
+	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae // indirect
+	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 	golang.org/x/net v0.0.0-20200925080053-05aa5d4ee321 // indirect
-	golang.org/x/sys v0.0.0-20200926100807-9d91bd62050c // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gorm.io/driver/postgres v1.0.2
