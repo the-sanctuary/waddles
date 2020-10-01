@@ -1,3 +1,4 @@
+// +heroku goVersion 1.15
 module github.com/the-sanctuary/waddles
 
 go 1.15
