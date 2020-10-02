@@ -21,6 +21,7 @@ func BuildRouter() router {
 	}
 	r.RegisterCommands(
 		ping,
+		purge,
 	)
 	return r
 }
