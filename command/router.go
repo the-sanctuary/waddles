@@ -74,7 +74,16 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		if correct {
 			cmd, args := findDeepestCommand(cmd, split)
 			ctx := buildContext(session, message, cmd, args)
-			go cmd.Handler(&ctx)
+			cmd.Handler(&ctx)
+
+			var ua db.UserActivity
+
+			r := db.CurrentWadlDB().DB.Where(&db.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
+			util.DebugError(r.Error)
+
+			ua.CommandCount++
+
+			db.CurrentWadlDB().DB.Save(&ua)
 		}
 	}
 }
