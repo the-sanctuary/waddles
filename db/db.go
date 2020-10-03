@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type wadldata struct {
+type WadlDB struct {
 	DB *gorm.DB
 }
 
-func NewWadlDB() wadldata {
+func NewWadlDB() WadlDB {
 	var dsn string
 
 	if util.Cfg.Db.URL == "" {
@@ -36,9 +36,12 @@ func NewWadlDB() wadldata {
 		// log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
-	return wadldata{DB: db}
+	return WadlDB{DB: db}
 }
 
-func (w wadldata) GetVersion() {
+func (wdb *WadlDB) Migrate() {
+}
+
+func (w WadlDB) GetVersion() {
 
 }

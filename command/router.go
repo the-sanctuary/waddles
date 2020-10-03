@@ -6,6 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -13,12 +14,14 @@ import (
 type Router struct {
 	Commands []*Command
 	Prefix   string
+	WadlDB   *db.WadlDB
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter() Router {
+func BuildRouter(wdb *db.WadlDB) Router {
 	r := Router{
 		Prefix: "~",
+		WadlDB: wdb,
 	}
 	r.RegisterCommands(
 		ping,
