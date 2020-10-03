@@ -10,6 +10,8 @@ type UserActivity struct {
 	gorm.Model
 	UserID                     string `gorm:"uniqueIndex"`
 	MessageCount               int
+	CommandCount               int
+	VoiceCount                 int
 	LastChannelVoiceAppearence *time.Time
 	LastChannelTextAppearence  *time.Time
 }
