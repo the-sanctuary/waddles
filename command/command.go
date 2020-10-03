@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/the-sanctuary/waddles/util"
 )
 
 //Command  is the struct that holds information about a command
@@ -39,9 +40,13 @@ func (c *Command) Triggers() []string {
 	return append(c.Aliases, c.Name)
 }
 
-//ReplyString replies to the contextual channel with the string provided
+//ReplyString replies to the contextual channel with the string provided.
+// returns nil if an error occured while sending the message
 func (ctx *Context) ReplyString(message string) *discordgo.Message {
-	msg, _ := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, message)
+	msg, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, message)
+	if util.DebugError(err) {
+		return nil
+	}
 	return msg
 }
 
@@ -51,8 +56,8 @@ func (ctx *Context) ReplyStringf(format string, a ...interface{}) *discordgo.Mes
 }
 
 //ReplyHelp prints the command's help text to the provided Context
-func (ctx *Context) ReplyHelp() {
-	ctx.ReplyStringf("%s %s %s", ctx.Router.Prefix, ctx.Command.Name, ctx.Command.Usage)
+func (ctx *Context) ReplyHelp() *discordgo.Message {
+	return ctx.ReplyStringf("%s %s %s", ctx.Router.Prefix, ctx.Command.Name, ctx.Command.Usage)
 }
 
 func (c *Command) hasSubcommands() bool {

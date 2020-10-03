@@ -48,7 +48,7 @@ var pingCount *Command = &Command{
 			}
 		} else {
 			c.ReplyString("`count` subcommand must have an arguement supplied.")
-			c.PrintHelp()
+			c.ReplyHelp()
 		}
 	},
 }
