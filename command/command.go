@@ -50,8 +50,8 @@ func (ctx *Context) ReplyStringf(format string, a ...interface{}) *discordgo.Mes
 	return ctx.ReplyString(fmt.Sprintf(format, a...))
 }
 
-//PrintHelp prints the command's help text to the provided Context
-func (ctx *Context) PrintHelp() {
+//ReplyHelp prints the command's help text to the provided Context
+func (ctx *Context) ReplyHelp() {
 	ctx.ReplyStringf("%s %s %s", ctx.Router.Prefix, ctx.Command.Name, ctx.Command.Usage)
 }
 
