@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/the-sanctuary/waddles/util"
+	"gorm.io/gorm"
 )
 
 //Command  is the struct that holds information about a command
@@ -38,6 +39,11 @@ type Context struct {
 //Triggers returns all strings (the command name and any aliases) that trigger this command
 func (c *Command) Triggers() []string {
 	return append(c.Aliases, c.Name)
+}
+
+//DB returns the current gorm.DB instance
+func (ctx *Context) DB() *gorm.DB {
+	return ctx.Router.WadlDB.DB
 }
 
 //ReplyString replies to the contextual channel with the string provided.

@@ -31,9 +31,11 @@ func main() {
 	}
 	defer session.Close()
 
-	router := command.BuildRouter()
 	// Open connection to database
-	_ = db.NewWadlDB()
+	wdb := db.NewWadlDB()
+	wdb.Migrate()
+
+	router := command.BuildRouter(&wdb)
 
 	// Register handlers
 	session.AddHandler(handler.TraceAllMessages)
