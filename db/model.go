@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type UserActivity struct {
 	gorm.Model
 	UserID                     string `gorm:"uniqueIndex"`
@@ -15,6 +14,7 @@ type UserActivity struct {
 	VoiceCount                 int
 	LastChannelVoiceAppearence *time.Time
 	LastChannelTextAppearence  *time.Time
+}
 
 //NitroUserChannel represents a voice channel registered to a nitro booster
 type NitroUserChannel struct {
