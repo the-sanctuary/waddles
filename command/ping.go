@@ -1,15 +1,19 @@
 package command
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/the-sanctuary/waddles/util"
+)
 
 //Ping command
 var ping *Command = &Command{
 	Name:        "ping",
 	Aliases:     *&[]string{"pong"},
 	Description: "This pongs your ping(pong)!",
-	Usage:       "ping",
+	Usage:       "ping [count <num>]",
 	Handler: func(c *Context) {
-		c.Session.ChannelMessageSend(c.Message.ChannelID, "Pong!")
+		c.ReplyString("Pong!")
 	},
 	SubCommands: []*Command{pingCount},
 }
@@ -22,22 +26,29 @@ var pingCount *Command = &Command{
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])
 
+			if util.DebugError(err) {
+				c.ReplyString("The argument to count must be a postive integer")
+				return
+			}
+
+			//make sure n is a postive number
+			n = util.AbsInt(n)
+
 			if n > 5 {
 				if c.Message.Author.ID == "90968241710563328" { //shame tim for being a shit
-					c.Session.ChannelMessageSend(c.Message.ChannelID, "Bad boy Tim! That's too many pongs!!")
+					c.ReplyString("Bad boy Tim! That's too many pongs!!")
 				} else {
-					c.Session.ChannelMessageSend(c.Message.ChannelID, "That's too many!")
+					c.ReplyString("That's too many!")
 				}
 				return
 			}
 
-			if err != nil {
-				// TODO: Print an error, count must be a number
-			}
 			for i := 0; i < n; i++ {
-				c.Session.ChannelMessageSend(c.Message.ChannelID, "Pong!")
+				c.ReplyString("Pong!")
 			}
-		} // else error
-
+		} else {
+			c.ReplyString("`count` subcommand must have an arguement supplied.")
+			c.PrintHelp()
+		}
 	},
 }

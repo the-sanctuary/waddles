@@ -1,6 +1,7 @@
 package util
 
 import (
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
@@ -44,7 +45,11 @@ func SetupLogging() {
 
 // DebugError handles an error with errlog (& zerolog)
 func DebugError(err error) bool {
-	return errorLogger.Debug(err)
+	isNil := errorLogger.Debug(err)
+	if !isNil {
+		log.Error().Err(err)
+	}
+	return isNil
 }
 
 //RegisterTermSignals  -
@@ -64,4 +69,9 @@ func SliceContains(slice []string, str string) bool {
 		}
 	}
 	return false
+}
+
+//AbsInt returns the absolute value of an integer
+func AbsInt(i int) int {
+	return int(math.Abs(float64(i)))
 }

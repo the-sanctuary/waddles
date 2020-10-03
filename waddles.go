@@ -6,8 +6,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/command"
-	"github.com/the-sanctuary/waddles/handler"
 	"github.com/the-sanctuary/waddles/db"
+	"github.com/the-sanctuary/waddles/handler"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -20,7 +20,6 @@ func main() {
 	session, err := discordgo.New("Bot " + util.Cfg.Wadl.Token)
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
-		log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
 

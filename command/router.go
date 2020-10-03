@@ -10,13 +10,14 @@ import (
 )
 
 //Router is the central command multiplexer
-type router struct {
+type Router struct {
 	Commands []*Command
 	Prefix   string
 }
 
-func BuildRouter() router {
-	r := router{
+//BuildRouter returns a fully built router stuct with commands preregistered
+func BuildRouter() Router {
+	r := Router{
 		Prefix: "~",
 	}
 	r.RegisterCommands(
@@ -26,15 +27,15 @@ func BuildRouter() router {
 	return r
 }
 
-//RegisterCommand adds a command to the Router
-func (r *router) RegisterCommands(cmds ...*Command) {
+//RegisterCommands adds a command(s) to the Router
+func (r *Router) RegisterCommands(cmds ...*Command) {
 	for _, c := range cmds {
 		r.Commands = append(r.Commands, c)
 	}
 }
 
 //Handler returns the func that deals with command delegates execution to command
-func (r *router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
+func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 	return func(session *discordgo.Session, message *discordgo.MessageCreate) {
 		log.Trace().Msg("Entering Router Handler")
 		defer log.Trace().Msg("Exiting Router Handler")
