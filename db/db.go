@@ -33,8 +33,10 @@ func NewWadlDB() WadlDB {
 			util.Cfg.Db.Port,
 			util.Cfg.Db.Name,
 		)
+		log.Info().Msg("Using database config for connection.")
 	} else {
 		dsn = util.Cfg.Db.URL
+		log.Info().Msg("Using database URL for connection.")
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
