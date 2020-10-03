@@ -40,6 +40,8 @@ func main() {
 	// Register handlers
 	session.AddHandler(handler.TraceAllMessages)
 	session.AddHandler(router.Handler())
+	session.AddHandler(handler.UserActivityTextChannel)
+	session.AddHandler(handler.UserActivityVoiceChannel)
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")

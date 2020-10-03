@@ -14,6 +14,14 @@ type WadlDB struct {
 	DB *gorm.DB
 }
 
+var (
+	wadlDB WadlDB
+)
+
+func CurrentWadlDB() *WadlDB {
+	return &wadlDB
+}
+
 func NewWadlDB() WadlDB {
 	var dsn string
 
@@ -36,10 +44,12 @@ func NewWadlDB() WadlDB {
 		// log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
-	return WadlDB{DB: db}
+	wadlDB = WadlDB{DB: db}
+	return wadlDB
 }
 
 func (wdb *WadlDB) Migrate() {
+	wdb.DB.AutoMigrate(&UserActivity{})
 }
 
 func (w WadlDB) GetVersion() {
