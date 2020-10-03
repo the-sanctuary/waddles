@@ -26,6 +26,7 @@ func BuildRouter(wdb *db.WadlDB) Router {
 	r.RegisterCommands(
 		ping,
 		purge,
+		uptime,
 	)
 	return r
 }
@@ -61,13 +62,6 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			return
 		}
 
-		//working setup for base commands
-		// trigger := strings.SplitN(message.Content, " ", 2)[0][1:]
-		// correct, cmd := triggerCheck(trigger, r.Commands)
-		// args := strings.Split(message.Content, " ")
-
-		// log.Trace().Msgf("trigger: %s, correct: %t, cmd: %s", trigger, correct, cmd.Name)
-
 		split := strings.Split(message.Content[len(r.Prefix):], " ")
 		correct, cmd := triggerCheck(split[0], r.Commands)
 
@@ -76,18 +70,17 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			ctx := buildContext(session, message, cmd, args)
 			cmd.Handler(&ctx)
 
+			//Update UserActivity entry's CommandCount
 			var ua db.UserActivity
-
 			r := db.CurrentWadlDB().DB.Where(&db.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
 			util.DebugError(r.Error)
-
 			ua.CommandCount++
-
 			db.CurrentWadlDB().DB.Save(&ua)
 		}
 	}
 }
 
+//Finds and returns the deepest subcommand for a given command and arg slice
 func findDeepestCommand(prevCmd *Command, args []string) (*Command, []string) {
 	if len(prevCmd.SubCommands) > 0 {
 		if len(args) > 1 {
@@ -100,11 +93,10 @@ func findDeepestCommand(prevCmd *Command, args []string) (*Command, []string) {
 	return prevCmd, args[1:]
 }
 
+//returns the command triggered by the provided string, otherwise returns (false, nil)
 func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
 	for _, cmd := range cmds {
 		triggers := cmd.Triggers()
-
-		// log.Trace().Msgf("Tested for cmd trigger: %s in: [%s]", testCmd, triggers)
 
 		if util.SliceContains(triggers, trigger) {
 			return true, cmd

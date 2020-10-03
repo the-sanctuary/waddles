@@ -14,6 +14,7 @@ import (
 
 var (
 	errorLogger errlog.Logger
+	startTime   *time.Time
 )
 
 //InitializeLogging inits basic logging capabilities
@@ -74,4 +75,14 @@ func SliceContains(slice []string, str string) bool {
 //AbsInt returns the absolute value of an integer
 func AbsInt(i int) int {
 	return int(math.Abs(float64(i)))
+}
+
+func Uptime() *time.Duration {
+	since := time.Since(*startTime)
+	return &since
+}
+
+func MarkStartTime() {
+	now := time.Now()
+	startTime = &now
 }

@@ -45,6 +45,7 @@ func main() {
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
+	util.MarkStartTime()
 
 	util.RegisterTermSignals()
 }
