@@ -19,9 +19,10 @@ type UserActivity struct {
 //NitroUserChannel represents a voice channel registered to a nitro booster
 type NitroUserChannel struct {
 	gorm.Model
-	UserID   string
-	ChannelD string
-	Active   bool
-	LastUsed *time.Time
-	Enabled  bool
+	Name      string
+	UserID    string
+	ChannelID string
+	Active    bool
+	LastUsed  *time.Time
+	Enabled   bool
 }

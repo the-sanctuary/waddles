@@ -33,7 +33,7 @@ type Context struct {
 	//Command args (i.e. the split message content)
 	Args []string
 	//The router currently used
-	Router Router
+	Router *Router
 }
 
 //Triggers returns all strings (the command name and any aliases) that trigger this command
@@ -64,6 +64,15 @@ func (ctx *Context) ReplyStringf(format string, a ...interface{}) *discordgo.Mes
 //ReplyHelp prints the command's help text to the provided Context
 func (ctx *Context) ReplyHelp() *discordgo.Message {
 	return ctx.ReplyStringf("%s %s %s", ctx.Router.Prefix, ctx.Command.Name, ctx.Command.Usage)
+}
+
+func (ctx *Context) ReplyError(err error) bool {
+	if err != nil {
+		ctx.ReplyString("An error occured. Check the log for details.")
+		util.DebugError(err)
+		return true
+	}
+	return false
 }
 
 func (c *Command) hasSubcommands() bool {
