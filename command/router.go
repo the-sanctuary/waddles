@@ -27,6 +27,7 @@ func BuildRouter(wdb *db.WadlDB) Router {
 		ping,
 		purge,
 		uptime,
+		nitro,
 	)
 	return r
 }
@@ -67,7 +68,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 
 		if correct {
 			cmd, args := findDeepestCommand(cmd, split)
-			ctx := buildContext(session, message, cmd, args)
+			ctx := buildContext(session, message, cmd, args, r)
 			cmd.Handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
@@ -105,12 +106,13 @@ func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
 	return false, nil
 }
 
-func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string) Context {
+func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string, router *Router) Context {
 	return *&Context{
 		Session: session,
 		Message: message,
 		Command: command,
 		Args:    args,
+		Router:  router,
 	}
 }
 

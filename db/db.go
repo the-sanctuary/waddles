@@ -46,12 +46,14 @@ func NewWadlDB() WadlDB {
 		// log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
+
 	wadlDB = WadlDB{DB: db}
 	return wadlDB
 }
 
 func (wdb *WadlDB) Migrate() {
 	wdb.DB.AutoMigrate(&UserActivity{})
+	wdb.DB.AutoMigrate(&NitroUserChannel{})
 }
 
 func (w WadlDB) GetVersion() {
