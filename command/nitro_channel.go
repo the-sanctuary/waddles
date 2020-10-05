@@ -61,8 +61,7 @@ var nitroChannelRegister *Command = &Command{
 			return
 		}
 
-		if util.SliceContains(member.Roles, "762537061265571861") {
-			// if util.SliceContains(member.Roles, "585559906871017475") { //TODO: read from config instead
+		if util.SliceContains(member.Roles, "585559906871017475") { //TODO: read from config instead
 			if len(c.Args) < 1 {
 				c.ReplyString("You must name supply a name for your channel")
 				return
@@ -89,7 +88,7 @@ var nitroChannelRegister *Command = &Command{
 				createdChannel, err := c.Session.GuildChannelCreateComplex(c.Message.GuildID, discordgo.GuildChannelCreateData{
 					Name:                 channelName,
 					Type:                 discordgo.ChannelTypeGuildVoice,
-					ParentID:             "762440238177320980", //TODO: read from config instead
+					ParentID:             "366987930842955780", //TODO: read from config instead
 					PermissionOverwrites: []*discordgo.PermissionOverwrite{&permOverwrite},
 				})
 
