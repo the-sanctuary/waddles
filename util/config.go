@@ -19,7 +19,7 @@ var (
 type Config struct {
 	Wadl struct {
 		LogLevel string `toml:"log-level" env:"WADL_DEBUG" env-default:"info"`
-		Prefix   string `toml:"prefx" env:"" env-default:"!"`
+		Prefix   string `toml:"prefix" env:"WADL_PREFIX" env-default:"s."`
 		Token    string `toml:"token" env:"WADL_TOKEN" env-default:""`
 	} `toml:"wadl"`
 	Db struct {

@@ -20,7 +20,7 @@ type Router struct {
 //BuildRouter returns a fully built router stuct with commands preregistered
 func BuildRouter(wdb *db.WadlDB) Router {
 	r := Router{
-		Prefix: "~",
+		Prefix: util.Cfg.Wadl.Prefix,
 		WadlDB: wdb,
 	}
 	r.RegisterCommands(
