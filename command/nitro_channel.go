@@ -1,10 +1,14 @@
 package command
 
+import (
+	"strings"
+
+	"github.com/bwmarrin/discordgo"
+	"github.com/the-sanctuary/waddles/db"
+	"github.com/the-sanctuary/waddles/util"
+)
+
 var nitroChannel *Command = &Command{
-	Name:        "nbperks",
-	Aliases:     *&[]string{"nbp"},
-	Description: " access your perks as a server nitro booster",
-	Usage:       "nbp []",
 	Name:        "channel",
 	Aliases:     *&[]string{"c"},
 	Description: "control your voice channel",
@@ -19,6 +23,28 @@ var nitroChannel *Command = &Command{
 			c.ReplyString("You don't have a channel.")
 		} else {
 			c.ReplyStringf("Your channel is named: %s", chann.Name)
+		}
+	},
+}
+
+var nitroChannelRelease *Command = &Command{
+	Name:        "release",
+	Aliases:     *&[]string{"rl"},
+	Description: "release your voice channel",
+	Usage:       "release",
+	Handler: func(c *Context) {
+		//Check to see if a user already has a channel registered
+		var chann db.NitroUserChannel
+		c.DB().Where(&db.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+
+		if chann.UserID == "" {
+			c.ReplyString("You don't have a channel to release!")
+		} else {
+			c.Session.ChannelDelete(chann.ChannelID)
+
+			c.DB().Delete(&chann).Commit()
+
+			c.ReplyString("Your channel has been released.")
 		}
 	},
 }
