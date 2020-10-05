@@ -63,7 +63,7 @@ func (ctx *Context) ReplyStringf(format string, a ...interface{}) *discordgo.Mes
 
 //ReplyHelp prints the command's help text to the provided Context
 func (ctx *Context) ReplyHelp() *discordgo.Message {
-	return ctx.ReplyStringf("%s %s %s", ctx.Router.Prefix, ctx.Command.Name, ctx.Command.Usage)
+	return ctx.ReplyStringf("Usage: `%s%s`", ctx.Router.Prefix, ctx.Command.Usage)
 }
 
 func (ctx *Context) ReplyError(err error) bool {
