@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	ConfigFile string = "./waddles.toml"
+	configFile string = "./waddles.toml"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 	Cfg Config
 )
 
-// ConfigDatabase holds bot config information
+// Config holds bot config information
 type Config struct {
 	Wadl struct {
 		LogLevel string `toml:"log-level" env:"WADL_DEBUG" env-default:"info"`
@@ -35,10 +35,10 @@ type Config struct {
 //ReadConfig parses config options from the environment and config file into a ConfigDatabase struct
 func ReadConfig() {
 	// Read in environment variables, and set the log level
-	err := cleanenv.ReadConfig(ConfigFile, &Cfg)
+	err := cleanenv.ReadConfig(configFile, &Cfg)
 
 	if err != nil {
-		log.Info().Msgf("[CONF] Unable to read  config file: \"%s\".  Continuing with defaults.", ConfigFile)
+		log.Info().Msgf("[CONF] Unable to read  config file: \"%s\".  Continuing with defaults.", configFile)
 	}
 
 	err = cleanenv.ReadEnv(&Cfg)
