@@ -4,8 +4,8 @@ prefx = "!"
 token = "<bot-token>"
 
 [db]
-user = "waddles"
-pass = "<password>"
+user = "postgres"
+pass = "mysecretpassword"
 host = "localhost"
 port = "5432"
 name = "waddles"
