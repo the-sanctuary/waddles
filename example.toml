@@ -1,6 +1,6 @@
 [wadl]
-lglvl = "info"
-prefx = "!"
+log-level = "info"
+prefix = "!"
 token = "<bot-token>"
 
 [db]
