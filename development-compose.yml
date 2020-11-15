@@ -1,0 +1,22 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    env_file: db.env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+    ports: 
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  bot:
+    build: .
+    restart: always
+    env_file: bot.env
+    depends_on:
+      - postgres
+volumes:
+  postgres_data:
