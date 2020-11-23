@@ -7,6 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/db"
+	"github.com/the-sanctuary/waddles/db/model"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -72,8 +73,8 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			cmd.Handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
-			var ua db.UserActivity
-			r := db.CurrentWadlDB().DB.Where(&db.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
+			var ua model.UserActivity
+			r := db.CurrentWadlDB().DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
 			util.DebugError(r.Error)
 			ua.CommandCount++
 			db.CurrentWadlDB().DB.Save(&ua)

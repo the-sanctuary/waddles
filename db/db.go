@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/db/model"
 	"github.com/the-sanctuary/waddles/util"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -43,7 +44,6 @@ func NewWadlDB() WadlDB {
 
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to open connection to database.  Quitting....")
-		// log.Debug().Msg("[IERR] " + err.Error())
 		os.Exit(1)
 	}
 
@@ -51,11 +51,8 @@ func NewWadlDB() WadlDB {
 	return wadlDB
 }
 
+//Migrate calls gorm.DB.AutoMigrate() on all models
 func (wdb *WadlDB) Migrate() {
-	wdb.DB.AutoMigrate(&UserActivity{})
-	wdb.DB.AutoMigrate(&NitroUserChannel{})
-}
-
-func (w WadlDB) GetVersion() {
-
+	wdb.DB.AutoMigrate(&model.UserActivity{})
+	wdb.DB.AutoMigrate(&model.NitroUserChannel{})
 }

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/the-sanctuary/waddles/db"
+	"github.com/the-sanctuary/waddles/db/model"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -16,8 +16,8 @@ var nitroChannel *Command = &Command{
 	SubCommands: []*Command{nitroChannelRegister, nitroChannelRelease},
 	Handler: func(c *Context) {
 		//Check to see if a user already has a channel registered
-		var chann db.NitroUserChannel
-		c.DB().Where(&db.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+		var chann model.NitroUserChannel
+		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
 
 		if chann.UserID == "" {
 			c.ReplyString("You don't have a channel.")
@@ -34,8 +34,8 @@ var nitroChannelRelease *Command = &Command{
 	Usage:       "release",
 	Handler: func(c *Context) {
 		//Check to see if a user already has a channel registered
-		var chann db.NitroUserChannel
-		c.DB().Where(&db.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+		var chann model.NitroUserChannel
+		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
 
 		if chann.UserID == "" {
 			c.ReplyString("You don't have a channel to release!")
@@ -68,8 +68,8 @@ var nitroChannelRegister *Command = &Command{
 			}
 
 			//Check to see if a user already has a channel registered
-			var chann db.NitroUserChannel
-			c.DB().Where(&db.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+			var chann model.NitroUserChannel
+			c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
 
 			if chann.UserID == "" {
 				channelName := strings.Join(c.Args, " ")
