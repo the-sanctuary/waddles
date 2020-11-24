@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/cebarks/cleanenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

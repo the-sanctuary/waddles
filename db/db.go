@@ -23,7 +23,7 @@ func CurrentWadlDB() *WadlDB {
 	return &wadlDB
 }
 
-func NewWadlDB() WadlDB {
+func NewWadlDB() *WadlDB {
 	var dsn string
 
 	if util.Cfg.Db.URL == "" {
@@ -48,7 +48,7 @@ func NewWadlDB() WadlDB {
 	}
 
 	wadlDB = WadlDB{DB: db}
-	return wadlDB
+	return &wadlDB
 }
 
 //Migrate calls gorm.DB.AutoMigrate() on all models

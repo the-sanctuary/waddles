@@ -35,7 +35,7 @@ func main() {
 	wdb := db.NewWadlDB()
 	wdb.Migrate()
 
-	router := command.BuildRouter(&wdb)
+	router := command.BuildRouter(wdb)
 
 	// Register handlers
 	session.AddHandler(handler.TraceAllMessages)

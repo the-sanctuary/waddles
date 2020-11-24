@@ -16,7 +16,7 @@ func (c *Command) Triggers() []string {
 	return append(c.Aliases, c.Name)
 }
 
-func (c *Command) hasSubcommands() bool {
+func (c *Command) HasSubcommands() bool {
 	if len(c.SubCommands) > 0 {
 		return true
 	}
