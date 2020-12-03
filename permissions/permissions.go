@@ -6,19 +6,17 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
-var (
-	permSystem PermissionSystem
-)
-
 type permissionSet struct {
-	Nodes       []*permissionNode `toml:"nodes"`
+	Nodes       []*permissionNode
+	rawNodes    []string `toml:"nodes"`
 	Groups      []*permissionGroup
 	Name        string
 	Description string
 }
 
 type permissionGroup struct {
-	Sets        []*permissionSet `toml:"sets"`
+	Sets        []*permissionSet
+	rawSets     []string `toml:"sets"`
 	Name        string
 	Description string
 	RoleID      string
@@ -30,7 +28,6 @@ type permissionTree struct {
 }
 
 type permissionNode struct {
-	Sets       []*permissionSet
 	Identifier string
 }
 
@@ -53,12 +50,8 @@ func (group *permissionGroup) UnmarshalTOML(i interface{}) error {
 	rawSets, _ := iMap["sets"].([]interface{})
 
 	for _, rawSet := range rawSets {
-		pm := CurrentPermissionSystem()
 		setString, _ := rawSet.(string)
-		set := pm.GetSetFromName(setString)
-
-		set.Groups = append(set.Groups, group)
-		group.Sets = append(group.Sets, set)
+		group.rawSets = append(group.rawSets, setString)
 	}
 
 	return nil
@@ -78,17 +71,11 @@ func (set *permissionSet) UnmarshalTOML(i interface{}) error {
 	set.Description = description.(string)
 
 	rawNodes, _ := iMap["nodes"].([]interface{})
-	pm := CurrentPermissionSystem()
 
 	for _, rawNode := range rawNodes {
 		nodeString, _ := rawNode.(string)
-		node := pm.GetNodeFromIdentifier(nodeString)
-
-		node.Sets = append(node.Sets, set)
-		set.Nodes = append(set.Nodes, node)
+		set.rawNodes = append(set.rawNodes, nodeString)
 	}
-
-	pm.Tree.Sets = append(pm.Tree.Sets, *set)
 
 	return nil
 }

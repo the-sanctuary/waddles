@@ -3,11 +3,10 @@ services:
   postgres:
     image: postgres
     restart: always
-    env_file: db.env
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: waddles_development
+      POSTGRES_PASSWORD: waddles_development
+      POSTGRES_USER: waddles
     ports: 
       - 5432:5432
     volumes:
@@ -15,7 +14,8 @@ services:
   bot:
     build: .
     restart: always
-    env_file: bot.env
+    environment:
+      WADL_DEBUG: trace
     depends_on:
       - postgres
 volumes:

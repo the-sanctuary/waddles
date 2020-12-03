@@ -1,4 +1,4 @@
-package main
+package waddles
 
 import (
 	"os"
@@ -11,41 +11,57 @@ import (
 	"github.com/the-sanctuary/waddles/util"
 )
 
-func main() {
+//Waddles holds the state for a Waddles session
+type Waddles struct {
+	WadlDB  *db.WadlDB
+	Session *discordgo.Session
+}
+
+//Start reads the config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
+func Start() *Waddles {
+	w := Waddles{}
+
 	util.InitializeLogging()
 	util.ReadConfig()
 	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)
-	session, err := discordgo.New("Bot " + util.Cfg.Wadl.Token)
+	var err error
+	w.Session, err = discordgo.New("Bot " + util.Cfg.Wadl.Token)
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
 		os.Exit(1)
 	}
 
+	// Open connection to database
+	wdb := db.BuildWadlDB()
+	wdb.Migrate()
+
+	db.Instance = &wdb
+
+	router := command.BuildRouter(w.WadlDB)
+
+	// Register handlers
+	w.Session.AddHandler(router.Handler())
+	w.Session.AddHandler(handler.TraceAllMessages)
+	w.Session.AddHandler(handler.UserActivityTextChannel)
+	w.Session.AddHandler(handler.UserActivityVoiceChannel)
+
 	// Open a websocket connection to Discord and start listening
-	err = session.Open()
+	err = w.Session.Open()
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to open a connection to Discord.  Quitting....")
 		os.Exit(1)
 	}
-	defer session.Close()
-
-	// Open connection to database
-	wdb := db.NewWadlDB()
-	wdb.Migrate()
-
-	router := command.BuildRouter(wdb)
-
-	// Register handlers
-	session.AddHandler(handler.TraceAllMessages)
-	session.AddHandler(router.Handler())
-	session.AddHandler(handler.UserActivityTextChannel)
-	session.AddHandler(handler.UserActivityVoiceChannel)
+	util.RegisterTermSignals()
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 	util.MarkStartTime()
 
-	util.RegisterTermSignals()
+	return &w
+}
+
+func (w *Waddles) Cleanup() {
+	w.Session.Close()
 }

@@ -25,6 +25,7 @@ RUN go build -o /build/bin/waddles .
 
 # create a barebones container to actually run in
 FROM scratch
+# FROM golang:1.15-alpine
 
 # copy our static binary
 COPY --from=builder /build/bin/waddles /

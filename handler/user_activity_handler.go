@@ -16,14 +16,14 @@ func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	var ua model.UserActivity
 
-	r := db.CurrentWadlDB().DB.Where(&model.UserActivity{UserID: m.Author.ID}).FirstOrCreate(&ua)
+	r := db.Instance.DB.Where(&model.UserActivity{UserID: m.Author.ID}).FirstOrCreate(&ua)
 	util.DebugError(r.Error)
 
 	now := time.Now()
 	ua.LastChannelTextAppearence = &now
 	ua.MessageCount++
 
-	db.CurrentWadlDB().DB.Save(&ua)
+	db.Instance.DB.Save(&ua)
 }
 
 //TODO Figure out how to distinguish join/leave events without having a flag stored in the DB
@@ -35,12 +35,12 @@ func UserActivityVoiceChannel(s *discordgo.Session, vsu *discordgo.VoiceStateUpd
 
 	log.Debug().Msgf("Voice session id: %s", vsu.SessionID)
 
-	r := db.CurrentWadlDB().DB.Where(&model.UserActivity{UserID: vsu.UserID}).FirstOrCreate(&ua)
+	r := db.Instance.DB.Where(&model.UserActivity{UserID: vsu.UserID}).FirstOrCreate(&ua)
 	util.DebugError(r.Error)
 
 	now := time.Now()
 	ua.LastChannelVoiceAppearence = &now
 	ua.VoiceCount++
 
-	db.CurrentWadlDB().DB.Save(&ua)
+	db.Instance.DB.Save(&ua)
 }

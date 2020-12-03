@@ -74,10 +74,10 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 
 			//Update UserActivity entry's CommandCount
 			var ua model.UserActivity
-			r := db.CurrentWadlDB().DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
+			r := db.Instance.DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
 			util.DebugError(r.Error)
 			ua.CommandCount++
-			db.CurrentWadlDB().DB.Save(&ua)
+			db.Instance.DB.Save(&ua)
 		}
 	}
 }
