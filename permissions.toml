@@ -7,9 +7,7 @@
 [[sets]]
     name = "resident"
     description = "residents"
-    nodes = [
-        "uptime"
-    ]
+    nodes = ["uptime"]
 
 [[sets]]
     name = "nitro_booster"
@@ -22,20 +20,13 @@
 ##### Permission groups
 
 [[groups]]
-    name = "The example group"
-    description = "that one example group"
-    role = "<discord role id>"
-    sets = [
-        "base"
-    ]
-
-[[groups]]
     name = "Resident"
     description = "them residents"
-    role = "18975618273466762834"
+    role = "772586405926797365"
     sets = [
         "base",
-        "resident"
+        "resident",
+        "nitro_booster"
     ]
 
 

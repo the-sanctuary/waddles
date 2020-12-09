@@ -29,7 +29,7 @@ FROM scratch
 # copy our static binary
 COPY --from=builder /build/bin/waddles /
 # copy the config file
-COPY waddles.toml ./
+COPY waddles.toml permissions.toml ./
 # copy ca-certificat
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

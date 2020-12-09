@@ -16,7 +16,7 @@ func RegisterTermSignals() {
 	<-sc
 }
 
-//SliceContains returns true if val is included in
+//SliceContains returns true if str is included in slice
 func SliceContains(slice []string, str string) bool {
 	for _, v := range slice {
 		if v == str {

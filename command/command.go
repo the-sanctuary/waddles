@@ -1,5 +1,7 @@
 package command
 
+import "github.com/the-sanctuary/waddles/permissions"
+
 //Command  is the struct that holds information about a command
 type Command struct {
 	Name        string
@@ -21,4 +23,16 @@ func (c *Command) HasSubcommands() bool {
 		return true
 	}
 	return false
+}
+
+func (c *Command) GeneratePermissionNode(permSystem *permissions.PermissionSystem, baseNode string) {
+	newBaseNode := baseNode + c.Name
+
+	permSystem.AddPermissionNode(newBaseNode)
+
+	if c.HasSubcommands() {
+		for _, subCmd := range c.SubCommands {
+			subCmd.GeneratePermissionNode(permSystem, newBaseNode+".")
+		}
+	}
 }

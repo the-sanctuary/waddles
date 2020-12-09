@@ -8,6 +8,7 @@ import (
 	"github.com/the-sanctuary/waddles/command"
 	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/handler"
+	"github.com/the-sanctuary/waddles/permissions"
 	"github.com/the-sanctuary/waddles/util"
 )
 
@@ -15,10 +16,11 @@ import (
 type Waddles struct {
 	WadlDB  *db.WadlDB
 	Session *discordgo.Session
+	Router  *command.Router
 }
 
-//Start reads the config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
-func Start() *Waddles {
+//Run reads the config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
+func Run() {
 	w := Waddles{}
 
 	util.InitializeLogging()
@@ -40,7 +42,11 @@ func Start() *Waddles {
 	db.Instance = &wdb
 	w.WadlDB = &wdb
 
-	router := command.BuildRouter(w.WadlDB)
+	permSystem := permissions.BuildPermissionSystem("./permissions.toml") //TODO: remove hard coded location to permissions.toml
+
+	router := command.BuildRouter(w.WadlDB, permSystem)
+
+	w.Router = &router
 
 	// Register handlers
 	w.Session.AddHandler(router.Handler())
@@ -50,19 +56,14 @@ func Start() *Waddles {
 
 	// Open a websocket connection to Discord and start listening
 	err = w.Session.Open()
+	defer w.Session.Close()
 	if util.DebugError(err) {
 		log.Info().Msg("[WADL] Unable to open a connection to Discord.  Quitting....")
 		os.Exit(1)
 	}
-	util.RegisterTermSignals()
 
 	// Print msg that the bot is running
 	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
 	util.MarkStartTime()
-
-	return &w
-}
-
-func (w *Waddles) Cleanup() {
-	w.Session.Close()
+	util.RegisterTermSignals()
 }
