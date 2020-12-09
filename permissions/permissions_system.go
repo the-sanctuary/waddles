@@ -58,7 +58,7 @@ func (pm *PermissionSystem) AddReferences() {
 func (pm *PermissionSystem) AddPermissionNode(nodeIdentifier string) {
 	node := &permissionNode{Identifier: nodeIdentifier}
 	pm.Nodes = append(pm.Nodes, node)
-	log.Trace().Msgf("Added permission node: %+v", node)
+	log.Debug().Msgf("Added permission node: %s", node.Identifier)
 }
 
 //UserHasPermissionNode will return whether or not the given Member has the given nodeIdentifier or not

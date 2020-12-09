@@ -24,14 +24,14 @@ func Run() {
 	w := Waddles{}
 
 	util.InitializeLogging()
-	util.ReadConfig()
+	config := util.ReadConfig()
 	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)
 	var err error
 	w.Session, err = discordgo.New("Bot " + util.Cfg.Wadl.Token)
 	if util.DebugError(err) {
-		log.Info().Msg("[WADL] Unable to create a Discord session.  Quitting....")
+		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
 		os.Exit(1)
 	}
 
@@ -42,7 +42,7 @@ func Run() {
 	db.Instance = &wdb
 	w.WadlDB = &wdb
 
-	permSystem := permissions.BuildPermissionSystem("./permissions.toml") //TODO: remove hard coded location to permissions.toml
+	permSystem := permissions.BuildPermissionSystem(config.GetConfigFileLocation("waddles.toml"))
 
 	router := command.BuildRouter(w.WadlDB, permSystem)
 
@@ -56,14 +56,15 @@ func Run() {
 
 	// Open a websocket connection to Discord and start listening
 	err = w.Session.Open()
-	defer w.Session.Close()
+
 	if util.DebugError(err) {
-		log.Info().Msg("[WADL] Unable to open a connection to Discord.  Quitting....")
-		os.Exit(1)
+		log.Fatal().Err(err).Msg("Unable to open a connection to Discord.  Quitting....")
 	}
 
+	defer w.Session.Close()
+
 	// Print msg that the bot is running
-	log.Info().Msg("[WADL] Waddles is now running.  Press CTRL-C to quit.")
+	log.Info().Msg("Waddles is now running.  Press CTRL-C to quit.")
 	util.MarkStartTime()
 	util.RegisterTermSignals()
 }

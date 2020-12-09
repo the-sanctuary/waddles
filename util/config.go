@@ -1,13 +1,15 @@
 package util
 
 import (
-	"github.com/cebarks/cleanenv"
+	"bytes"
+	"io/ioutil"
+	"os"
+	"path"
+	"strings"
+
+	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-)
-
-const (
-	configFile string = "./waddles.toml"
 )
 
 var (
@@ -18,45 +20,91 @@ var (
 // Config holds bot config information
 type Config struct {
 	Wadl struct {
-		LogLevel string `toml:"log-level" env:"WADL_DEBUG" env-default:"info"`
-		Prefix   string `toml:"prefix" env:"WADL_PREFIX" env-default:"s."`
-		Token    string `toml:"token" env:"WADL_TOKEN" env-default:""`
+		LogLevel string `toml:"log-level"`
+		Prefix   string `toml:"prefix"`
+		Token    string `toml:"token"`
 		GuildID  string `toml:"guild-id"`
-	} `toml:"wadl"`
+	} `toml:"waddles" comment:"General Bot Configuration"`
 	Db struct {
-		User string `toml:"user" env-default:"waddles"`
-		Pass string `toml:"pass" env-default:""`
-		Host string `toml:"host" env-default:"localhost"`
-		Port string `toml:"port" env-default:"5432"`
-		URL  string `toml:"url" env:"DATABASE_URL"`
-		Name string `toml:"name" env-default:"waddles"`
-	} `toml:"db"`
+		Host string `toml:"host"`
+		Port string `toml:"port"`
+		User string `toml:"user"`
+		Pass string `toml:"pass"`
+		Name string `toml:"database-name"`
+		URL  string `toml:"url" commented:"true" comment:"uncomment to use a postgres URI instead of above"`
+	} `toml:"database" comment:"Postgresql Database Connection Information"`
+	NitroPerk struct {
+		BoosterChannel struct {
+			ParentID string `toml:"parent-id" comment:"Discord catagory ID for channels to be managed under"`
+		} `toml:"booster-channel" comment:"server booster personal channel options"`
+	} `toml:"nitro" comment:"perks related to being a server booster"`
+	configDir string
 }
 
-//ReadConfig parses config options from the environment and config file into a ConfigDatabase struct
-func ReadConfig() {
-	// Read in environment variables, and set the log level
-	err := cleanenv.ReadConfig(configFile, &Cfg)
+//ReadConfig parses the config file into a Config struct
+func ReadConfig() *Config {
+	configDir := os.Getenv("WADL_CONFIG_DIR")
 
-	if err != nil {
-		log.Info().Msgf("[CONF] Unable to read  config file: \"%s\".  Continuing with defaults.", configFile)
+	if configDir == "" {
+		pwd, _ := os.Getwd()
+		configDir = pwd + "/config/"
+		log.Warn().Msgf("WADL_CONFIG_DIR not set, defaulting to working dir (%s)", configDir)
 	}
 
-	err = cleanenv.ReadEnv(&Cfg)
-
-	if err != nil {
-		log.Info().Msg("[CONF] Unable to read in environment variables.")
+	if !strings.HasSuffix(configDir, "/") {
+		configDir = path.Clean(configDir) + "/"
 	}
 
-	//parse zerolog.Level from Cfg.Debug
-	globalLevel, err := zerolog.ParseLevel(Cfg.Wadl.LogLevel)
+	Cfg = Config{configDir: configDir}
 
-	log.Info().Msgf("[LOG] Log Level set to: %s", globalLevel.String())
+	configFile := Cfg.GetConfigFileLocation("waddles.toml")
+
+	if !FileExists(configFile) {
+		Cfg.configDir = ""
+
+		var bytes bytes.Buffer
+		err := toml.NewEncoder(&bytes).Order(toml.OrderPreserve).Encode(Cfg)
+
+		if err != nil {
+			log.Panic().Err(err).Msg("Unable to save sample config file.")
+		}
+
+		ioutil.WriteFile(configFile, bytes.Bytes(), 0644)
+		log.Fatal().Msgf("Config file doesn't exist. An example has been saved in its place.")
+	}
+
+	// Read config file from the file
+	bytes, err := ioutil.ReadFile(configFile)
 
 	if err != nil {
-		log.Info().Msgf("[CONF] Supplied debugging log level (%s) is invalid. Defaulting to \"info\".", Cfg.Wadl.LogLevel)
+		log.Fatal().Err(err).Msgf("Unable to read config file at: '%s'", configFile)
 	}
+
+	// Unmarshal the config file bytes into a Config struct
+	err = toml.Unmarshal(bytes, &Cfg)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Unable to parse config file.")
+	}
+
+	log.Debug().Msgf("Read config file: %s", configFile)
+	log.Trace().Msgf("Config Struct: %+v", Cfg)
+
+	logLevel, err := zerolog.ParseLevel(Cfg.Wadl.LogLevel)
+	if err != nil {
+		log.Warn().Msgf("Supplied config file log level (%s) is invalid. Defaulting to info.", Cfg.Wadl.LogLevel)
+		logLevel = zerolog.InfoLevel
+	}
+
+	log.Info().Msgf("Log Level set to: %s", logLevel.String())
 
 	// Set global log level
-	zerolog.SetGlobalLevel(globalLevel)
+	zerolog.SetGlobalLevel(logLevel)
+
+	return &Cfg
+}
+
+//GetConfigFileLocation returns the full path of the requested configFile
+func (config Config) GetConfigFileLocation(configFile string) string {
+	return config.configDir + configFile
 }

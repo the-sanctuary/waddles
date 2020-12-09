@@ -30,3 +30,12 @@ func SliceContains(slice []string, str string) bool {
 func AbsInt(i int) int {
 	return int(math.Abs(float64(i)))
 }
+
+// FileExists checks if a path exists and is a file
+func FileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
+}
