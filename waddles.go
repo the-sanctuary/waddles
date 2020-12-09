@@ -38,6 +38,7 @@ func Start() *Waddles {
 	wdb.Migrate()
 
 	db.Instance = &wdb
+	w.WadlDB = &wdb
 
 	router := command.BuildRouter(w.WadlDB)
 

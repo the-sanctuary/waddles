@@ -18,10 +18,9 @@ ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
-    
-# build our static binary
-RUN go build -o /build/bin/waddles .
 
+# build our static binary
+RUN go build -o /build/bin/waddles ./cmd/waddles/
 
 # create a barebones container to actually run in
 FROM scratch
