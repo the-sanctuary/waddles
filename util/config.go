@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/cebarks/cleanenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -21,6 +21,7 @@ type Config struct {
 		LogLevel string `toml:"log-level" env:"WADL_DEBUG" env-default:"info"`
 		Prefix   string `toml:"prefix" env:"WADL_PREFIX" env-default:"s."`
 		Token    string `toml:"token" env:"WADL_TOKEN" env-default:""`
+		GuildID  string `toml:"guild-id"`
 	} `toml:"wadl"`
 	Db struct {
 		User string `toml:"user" env-default:"waddles"`

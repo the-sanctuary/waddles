@@ -18,18 +18,18 @@ ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
-    
-# build our static binary
-RUN go build -o /build/bin/waddles .
 
+# build our static binary
+RUN go build -o /build/bin/waddles ./cmd/waddles/
 
 # create a barebones container to actually run in
 FROM scratch
+# FROM golang:1.15-alpine
 
 # copy our static binary
 COPY --from=builder /build/bin/waddles /
 # copy the config file
-COPY waddles.toml ./
+COPY waddles.toml permissions.toml ./
 # copy ca-certificat
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

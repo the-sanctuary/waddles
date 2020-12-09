@@ -2,6 +2,7 @@
 log-level = "info"
 prefix = "!"
 token = "<bot-token>"
+guild-id = "your guild id"
 
 [db]
 user = "postgres"

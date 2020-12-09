@@ -7,28 +7,38 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/db"
+	"github.com/the-sanctuary/waddles/db/model"
+	"github.com/the-sanctuary/waddles/permissions"
 	"github.com/the-sanctuary/waddles/util"
 )
 
 //Router is the central command multiplexer
 type Router struct {
-	Commands []*Command
-	Prefix   string
-	WadlDB   *db.WadlDB
+	Commands   []*Command
+	Prefix     string
+	WadlDB     *db.WadlDB
+	PermSystem *permissions.PermissionSystem
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem) Router {
 	r := Router{
-		Prefix: util.Cfg.Wadl.Prefix,
-		WadlDB: wdb,
+		Prefix:     util.Cfg.Wadl.Prefix,
+		WadlDB:     wdb,
+		PermSystem: permSystem,
 	}
+
 	r.RegisterCommands(
 		ping,
 		purge,
 		uptime,
 		nitro,
+		debug,
 	)
+
+	r.generatePermissionNodes()
+	permSystem.AddReferences()
+
 	return r
 }
 
@@ -67,31 +77,45 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		correct, cmd := triggerCheck(split[0], r.Commands)
 
 		if correct {
-			cmd, args := findDeepestCommand(cmd, split)
-			ctx := buildContext(session, message, cmd, args, r)
-			cmd.Handler(&ctx)
+			deepestCmd, args, node := findDeepestCommand(cmd, split, cmd.Name)
+
+			ctx := buildContext(session, message, deepestCmd, args, r)
+
+			if !r.userHasCorrectPermissions(session, message.Author, node) {
+				ctx.ReplyStringf("You don't have the required permission node `%s` for this command.", node)
+				return
+			}
+
+			deepestCmd.Handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
-			var ua db.UserActivity
-			r := db.CurrentWadlDB().DB.Where(&db.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
-			util.DebugError(r.Error)
+			var ua model.UserActivity
+			tx := db.Instance.DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
+			util.DebugError(tx.Error)
 			ua.CommandCount++
-			db.CurrentWadlDB().DB.Save(&ua)
+			db.Instance.DB.Save(&ua)
 		}
 	}
 }
 
+func (r Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
+	gm, err := session.GuildMember(util.Cfg.Wadl.GuildID, user.ID)
+	util.DebugError(err)
+
+	return r.PermSystem.UserHasPermissionNode(gm, nodeIdentifier)
+}
+
 //Finds and returns the deepest subcommand for a given command and arg slice
-func findDeepestCommand(prevCmd *Command, args []string) (*Command, []string) {
+func findDeepestCommand(prevCmd *Command, args []string, node string) (*Command, []string, string) {
 	if len(prevCmd.SubCommands) > 0 {
 		if len(args) > 1 {
 			found, cmd := triggerCheck(args[1], prevCmd.SubCommands)
 			if found {
-				return findDeepestCommand(cmd, args[1:])
+				return findDeepestCommand(cmd, args[1:], node+"."+cmd.Name)
 			}
 		}
 	}
-	return prevCmd, args[1:]
+	return prevCmd, args[1:], node
 }
 
 //returns the command triggered by the provided string, otherwise returns (false, nil)
@@ -113,6 +137,12 @@ func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, 
 		Command: command,
 		Args:    args,
 		Router:  router,
+	}
+}
+
+func (r *Router) generatePermissionNodes() {
+	for _, cmd := range r.Commands {
+		cmd.GeneratePermissionNode(r.PermSystem, "")
 	}
 }
 

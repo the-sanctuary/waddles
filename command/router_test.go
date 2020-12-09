@@ -18,7 +18,8 @@ func Test_FindDeepestHandler(t *testing.T) {
 		SubCommands: []*Command{testcmdSub},
 	}
 
-	actual, args := findDeepestCommand(testcmd, []string{"testcmd", "sub", "Arrrrrrghhhh"})
-	assert.Equal(t, actual.Name, "sub")
-	assert.Equal(t, args, []string{"Arrrrrrghhhh"})
+	actual, args, node := findDeepestCommand(testcmd, []string{"testcmd", "sub", "Arrrrrrghhhh"}, testcmd.Name)
+	assert.Equal(t, "sub", actual.Name)
+	assert.Equal(t, []string{"Arrrrrrghhhh"}, args)
+	assert.Equal(t, "testcmd.sub", node)
 }
