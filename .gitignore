@@ -1,5 +1,10 @@
 waddles.toml
+permissions.toml
+
 waddles
+
+bin/
 build/
 vendor/
 
+production.env
