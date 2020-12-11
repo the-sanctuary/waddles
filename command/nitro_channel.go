@@ -88,7 +88,7 @@ var nitroChannelRegister *Command = &Command{
 				createdChannel, err := c.Session.GuildChannelCreateComplex(c.Message.GuildID, discordgo.GuildChannelCreateData{
 					Name:                 channelName,
 					Type:                 discordgo.ChannelTypeGuildVoice,
-					ParentID:             util.Cfg.NitroPerk.BoosterChannel.ParentID,
+					ParentID:             c.Router.Config.NitroPerk.BoosterChannel.ParentID,
 					PermissionOverwrites: []*discordgo.PermissionOverwrite{&permOverwrite},
 				})
 

@@ -23,7 +23,7 @@ func Run() {
 	}
 
 	// Open connection to database
-	wdb := db.BuildWadlDB()
+	wdb := db.BuildWadlDB(config)
 	wdb.Migrate()
 
 	permSystem := permissions.BuildPermissionSystem(config.GetConfigFileLocation("permissions.toml"))

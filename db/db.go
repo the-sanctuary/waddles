@@ -21,20 +21,20 @@ var (
 )
 
 //BuildWadlDB connects to the database and returns a WadlDB{} holding the database connection
-func BuildWadlDB() WadlDB {
+func BuildWadlDB(config *util.Config) WadlDB {
 	var dsn string
 
-	if util.Cfg.Db.URL == "" {
+	if config.Db.URL == "" {
 		dsn = fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
-			util.Cfg.Db.User,
-			util.Cfg.Db.Pass,
-			util.Cfg.Db.Host,
-			util.Cfg.Db.Port,
-			util.Cfg.Db.Name,
+			config.Db.User,
+			config.Db.Pass,
+			config.Db.Host,
+			config.Db.Port,
+			config.Db.Name,
 		)
 		log.Info().Msg("Using database config for connection.")
 	} else {
-		dsn = util.Cfg.Db.URL
+		dsn = config.Db.URL
 		log.Info().Msg("Using database URL for connection.")
 	}
 

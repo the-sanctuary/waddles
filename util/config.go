@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	//Cfg holds the current config information in a Config struct
-	Cfg Config
+	//cfg holds the current config information in a Config struct
+	cfg Config
 )
 
 // Config holds bot config information
@@ -55,15 +55,15 @@ func ReadConfig() *Config {
 		configDir = path.Clean(configDir) + "/"
 	}
 
-	Cfg = Config{configDir: configDir}
+	cfg = Config{configDir: configDir}
 
-	configFile := Cfg.GetConfigFileLocation("waddles.toml")
+	configFile := cfg.GetConfigFileLocation("waddles.toml")
 
 	if !FileExists(configFile) {
-		Cfg.configDir = ""
+		cfg.configDir = ""
 
 		var bytes bytes.Buffer
-		err := toml.NewEncoder(&bytes).Order(toml.OrderPreserve).Encode(Cfg)
+		err := toml.NewEncoder(&bytes).Order(toml.OrderPreserve).Encode(cfg)
 
 		if err != nil {
 			log.Panic().Err(err).Msg("Unable to save sample config file.")
@@ -81,18 +81,18 @@ func ReadConfig() *Config {
 	}
 
 	// Unmarshal the config file bytes into a Config struct
-	err = toml.Unmarshal(bytes, &Cfg)
+	err = toml.Unmarshal(bytes, &cfg)
 
 	if err != nil {
 		log.Fatal().Err(err).Msg("Unable to parse config file.")
 	}
 
 	log.Debug().Msgf("Read config file: %s", configFile)
-	log.Trace().Msgf("Config Struct: %+v", Cfg)
+	log.Trace().Msgf("Config Struct: %+v", cfg)
 
-	logLevel, err := zerolog.ParseLevel(Cfg.Wadl.LogLevel)
+	logLevel, err := zerolog.ParseLevel(cfg.Wadl.LogLevel)
 	if err != nil {
-		log.Warn().Msgf("Supplied config file log level (%s) is invalid. Defaulting to info.", Cfg.Wadl.LogLevel)
+		log.Warn().Msgf("Supplied config file log level (%s) is invalid. Defaulting to info.", cfg.Wadl.LogLevel)
 		logLevel = zerolog.InfoLevel
 	}
 
@@ -101,7 +101,7 @@ func ReadConfig() *Config {
 	// Set global log level
 	zerolog.SetGlobalLevel(logLevel)
 
-	return &Cfg
+	return &cfg
 }
 
 //GetConfigFileLocation returns the full path of the requested configFile
