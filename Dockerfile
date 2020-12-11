@@ -1,9 +1,6 @@
 # compile waddles inside a container
 FROM golang:1.15-alpine AS builder
 
-# # we need ca-certificates in our final container to make discord api requests
-# RUN apk update && apk add --no-cache git ca-certificates && update-ca-certificates
-
 WORKDIR /build
 
 # download dependencies
@@ -22,14 +19,12 @@ ENV GO111MODULE=on \
 # build our static binary
 RUN go build -o /build/bin/waddles ./cmd/waddles/
 
-# create a barebones container to actually run in
+# create a barebones container to actually run waddles in
 FROM scratch
-# FROM golang:1.15-alpine
 
 # copy our static binary
 COPY --from=builder /build/bin/waddles /
-# copy the config file
-COPY waddles.toml permissions.toml ./
+
 # copy ca-certificat
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

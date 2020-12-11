@@ -1,10 +1,11 @@
-waddles.toml
-permissions.toml
+config/
 
 waddles
+bin/waddles
 
-bin/
 build/
 vendor/
 
 production.env
+
+coverage.txt

@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Golang Testing Suite
+name: Golang Test Suite
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -26,13 +26,13 @@ jobs:
         
       # Setup a Go environment and add it to the PATH
       - name: Setup Go environment
-        uses: actions/setup-go@v2.1.2
+        uses: actions/setup-go@v2.1.3
         with:
           go-version: '^1.15.0'
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
+      - name: go test
+        run: go test ./... -coverprofile=coverage.txt -covermode=atomic
 
       # Upload coverate to CodeCov
       - name: Upload coverage to CodeCov

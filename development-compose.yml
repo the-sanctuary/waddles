@@ -4,8 +4,8 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB: waddles_development
-      POSTGRES_PASSWORD: waddles_development
+      POSTGRES_DB: waddles
+      POSTGRES_PASSWORD: waddles
       POSTGRES_USER: waddles
     ports: 
       - 5432:5432

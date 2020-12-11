@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/db/model"
@@ -22,31 +21,32 @@ var (
 )
 
 //BuildWadlDB connects to the database and returns a WadlDB{} holding the database connection
-func BuildWadlDB() WadlDB {
+func BuildWadlDB(config *util.Config) WadlDB {
 	var dsn string
 
-	if util.Cfg.Db.URL == "" {
+	if config.Db.URL == "" {
 		dsn = fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
-			util.Cfg.Db.User,
-			util.Cfg.Db.Pass,
-			util.Cfg.Db.Host,
-			util.Cfg.Db.Port,
-			util.Cfg.Db.Name,
+			config.Db.User,
+			config.Db.Pass,
+			config.Db.Host,
+			config.Db.Port,
+			config.Db.Name,
 		)
 		log.Info().Msg("Using database config for connection.")
 	} else {
-		dsn = util.Cfg.Db.URL
+		dsn = config.Db.URL
 		log.Info().Msg("Using database URL for connection.")
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if util.DebugError(err) {
-		log.Info().Msg("[WADL] Unable to open connection to database.  Quitting....")
-		os.Exit(1)
+		log.Fatal().Err(err).Msg("Unable to open connection to database. Quitting....")
 	}
 
-	return WadlDB{DB: db}
+	Instance = &WadlDB{DB: db}
+
+	return *Instance
 }
 
 //Migrate calls gorm.DB.AutoMigrate() on all models

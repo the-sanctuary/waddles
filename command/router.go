@@ -18,14 +18,16 @@ type Router struct {
 	Prefix     string
 	WadlDB     *db.WadlDB
 	PermSystem *permissions.PermissionSystem
+	Config     *util.Config
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *util.Config) Router {
 	r := Router{
-		Prefix:     util.Cfg.Wadl.Prefix,
+		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,
 		PermSystem: permSystem,
+		Config:     cfg,
 	}
 
 	r.RegisterCommands(
@@ -79,7 +81,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		if correct {
 			deepestCmd, args, node := findDeepestCommand(cmd, split, cmd.Name)
 
-			ctx := buildContext(session, message, deepestCmd, args, r)
+			ctx := buildContext(r, session, message, deepestCmd, args)
 
 			if !r.userHasCorrectPermissions(session, message.Author, node) {
 				ctx.ReplyStringf("You don't have the required permission node `%s` for this command.", node)
@@ -99,7 +101,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 }
 
 func (r Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
-	gm, err := session.GuildMember(util.Cfg.Wadl.GuildID, user.ID)
+	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
 	util.DebugError(err)
 
 	return r.PermSystem.UserHasPermissionNode(gm, nodeIdentifier)
@@ -130,13 +132,13 @@ func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
 	return false, nil
 }
 
-func buildContext(session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string, router *Router) Context {
+func buildContext(router *Router, session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string) Context {
 	return *&Context{
+		Router:  router,
 		Session: session,
 		Message: message,
 		Command: command,
 		Args:    args,
-		Router:  router,
 	}
 }
 

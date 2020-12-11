@@ -19,23 +19,21 @@ func InitializeLogging() {
 
 //SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
 func SetupLogging() {
-	if zerolog.GlobalLevel() <= zerolog.DebugLevel {
-		errorLogger = errlog.NewLogger(&errlog.Config{
-			PrintFunc:          log.Error().Msgf,
-			LinesBefore:        6,
-			LinesAfter:         4,
-			PrintError:         true,
-			PrintSource:        true,
-			PrintStack:         false,
-			ExitOnDebugSuccess: true,
-		})
-
+	if zerolog.GlobalLevel() <= zerolog.TraceLevel {
 		//adds file and line number to log
 		log.Logger = log.With().Caller().Logger()
 	} else {
-		errorLogger = errlog.DefaultLogger
 		errlog.DefaultLogger.Disable(true)
 	}
+	errorLogger = errlog.NewLogger(&errlog.Config{
+		PrintFunc:          log.Error().Msgf,
+		LinesBefore:        4,
+		LinesAfter:         4,
+		PrintError:         true,
+		PrintSource:        true,
+		PrintStack:         true,
+		ExitOnDebugSuccess: true,
+	})
 }
 
 // DebugError handles an error with errlog (& zerolog)
