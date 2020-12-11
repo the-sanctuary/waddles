@@ -1,8 +1,6 @@
 package waddles
 
 import (
-	"os"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/command"
@@ -29,20 +27,18 @@ func Run() {
 
 	// Create a Discord session using our bot token (client secret)
 	var err error
-	w.Session, err = discordgo.New("Bot " + util.Cfg.Wadl.Token)
+	w.Session, err = discordgo.New("Bot " + config.Wadl.Token)
 	if util.DebugError(err) {
 		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
-		os.Exit(1)
 	}
 
 	// Open connection to database
 	wdb := db.BuildWadlDB()
 	wdb.Migrate()
 
-	db.Instance = &wdb
 	w.WadlDB = &wdb
 
-	permSystem := permissions.BuildPermissionSystem(config.GetConfigFileLocation("waddles.toml"))
+	permSystem := permissions.BuildPermissionSystem(config.GetConfigFileLocation("permissions.toml"))
 
 	router := command.BuildRouter(w.WadlDB, permSystem)
 
