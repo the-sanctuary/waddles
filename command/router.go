@@ -18,14 +18,16 @@ type Router struct {
 	Prefix     string
 	WadlDB     *db.WadlDB
 	PermSystem *permissions.PermissionSystem
+	Config     *util.Config
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *util.Config) Router {
 	r := Router{
 		Prefix:     util.Cfg.Wadl.Prefix,
 		WadlDB:     wdb,
 		PermSystem: permSystem,
+		Config:     cfg,
 	}
 
 	r.RegisterCommands(

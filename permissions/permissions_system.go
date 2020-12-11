@@ -102,7 +102,7 @@ func (pm *PermissionSystem) getMemberNodes(member *discordgo.Member) []string {
 	return memberNodes
 }
 
-//getNodeFromIdentifier Returns a pointer to the permissions.permissionNode{} the setName represents
+//getNodeFromIdentifier Returns a pointer to the permissions.permissionNode{} the nodeIdentifier represents
 func (pm *PermissionSystem) getNodeFromIdentifier(nodeIdentifier string) *permissionNode {
 	for _, node := range pm.Nodes {
 		if node.Identifier == nodeIdentifier {
