@@ -37,9 +37,3 @@
         "base",
         "resident"
     ]
-
-
-# File based because:
-# - faster since its all in memory (lots of database includes queries, preloading would help this a lot though)
-# - perms won't change much, only when adding new stuff or major changes
-#   - could still have commands to add stuff ad-hoc
