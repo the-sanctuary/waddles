@@ -24,7 +24,7 @@ type Router struct {
 //BuildRouter returns a fully built router stuct with commands preregistered
 func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *util.Config) Router {
 	r := Router{
-		Prefix:     util.Cfg.Wadl.Prefix,
+		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,
 		PermSystem: permSystem,
 		Config:     cfg,

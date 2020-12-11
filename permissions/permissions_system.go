@@ -15,7 +15,8 @@ type PermissionSystem struct {
 	Tree  permissionTree
 }
 
-func BuildPermissionSystem(permissionFile string) *PermissionSystem {
+//BuildPermissionSystem returns a to a loaded PermissionSystem based on the given file
+func BuildPermissionSystem(permissionFile string) PermissionSystem {
 	permTree := loadPermissionConfig(permissionFile)
 
 	permSystem := PermissionSystem{
@@ -23,9 +24,10 @@ func BuildPermissionSystem(permissionFile string) *PermissionSystem {
 		Nodes: make([]*permissionNode, 0),
 	}
 
-	return &permSystem
+	return permSystem
 }
 
+//AddReferences loops over all sets and groups in the PermissionSystem, correctly populating any lists of associations based on the raw* field
 func (pm *PermissionSystem) AddReferences() {
 	tree := &pm.Tree
 
@@ -55,6 +57,7 @@ func (pm *PermissionSystem) AddReferences() {
 	}
 }
 
+//AddPermissionNode creates a new permissionNode{} with the given identifier and appends it to the list of Nodes in this PermissionSystem
 func (pm *PermissionSystem) AddPermissionNode(nodeIdentifier string) {
 	node := &permissionNode{Identifier: nodeIdentifier}
 	pm.Nodes = append(pm.Nodes, node)

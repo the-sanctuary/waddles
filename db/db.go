@@ -21,7 +21,7 @@ var (
 )
 
 //BuildWadlDB connects to the database and returns a WadlDB{} holding the database connection
-func BuildWadlDB() *WadlDB {
+func BuildWadlDB() WadlDB {
 	var dsn string
 
 	if util.Cfg.Db.URL == "" {
@@ -46,7 +46,7 @@ func BuildWadlDB() *WadlDB {
 
 	Instance = &WadlDB{DB: db}
 
-	return Instance
+	return *Instance
 }
 
 //Migrate calls gorm.DB.AutoMigrate() on all models

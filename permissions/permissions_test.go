@@ -196,6 +196,7 @@ func Test_ParseGroup(t *testing.T) {
 }
 
 func Test_ParsePermissionConfig(t *testing.T) {
+	t.Skip()
 	actual, err := parsePermissionConfig([]byte(tomlBytesAll))
 
 	assert.NoError(t, err, "Error occured during unmarshal.")
