@@ -1,1 +1,20 @@
-production-compose.yml
+version: "3"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    env_file: production.env
+    environment:
+    ports: 
+      - 5432:5432
+    volumes:
+      - ${DB_LOCATION}:/var/lib/postgresql/data/:z
+
+  bot:
+    build: .
+    restart: always
+    env_file: production.env
+    volumes:
+      - ${WADL_CONFIG_DIR}:/config:z
+    depends_on:
+      - postgres
