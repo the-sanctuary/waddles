@@ -1,12 +1,27 @@
-[wadl]
-log-level = "info"
-prefix = "!"
-token = "<bot-token>"
-guild-id = "your guild id"
 
-[db]
-user = "postgres"
-pass = "mysecretpassword"
-host = "localhost"
-port = "5432"
-name = "waddles"
+# General Bot Configuration
+[waddles]
+  log-level = ""
+  prefix = ""
+  token = ""
+  guild-id = ""
+
+# Postgresql Database Connection Information
+[database]
+  host = ""
+  port = ""
+  user = ""
+  pass = ""
+  database-name = ""
+
+  # uncomment to use a postgres URI instead of above
+  # url = ""
+
+# perks related to being a server booster
+[nitro]
+
+  # server booster personal channel options
+  [nitro.booster-channel]
+
+    # Discord catagory ID for channels to be managed under
+    parent-id = ""

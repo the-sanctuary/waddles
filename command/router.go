@@ -6,6 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/cfg"
 	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/db/model"
 	"github.com/the-sanctuary/waddles/permissions"
@@ -18,11 +19,11 @@ type Router struct {
 	Prefix     string
 	WadlDB     *db.WadlDB
 	PermSystem *permissions.PermissionSystem
-	Config     *util.Config
+	Config     *cfg.Config
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *util.Config) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router {
 	r := Router{
 		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,

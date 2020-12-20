@@ -3,6 +3,7 @@ package waddles
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/cfg"
 	"github.com/the-sanctuary/waddles/command"
 	"github.com/the-sanctuary/waddles/db"
 	"github.com/the-sanctuary/waddles/handler"
@@ -13,7 +14,7 @@ import (
 //Run reads the config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
 func Run() {
 	util.InitializeLogging()
-	config := util.ReadConfig()
+	config := cfg.ReadConfig()
 	util.SetupLogging()
 
 	// Create a Discord session using our bot token (client secret)

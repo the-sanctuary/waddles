@@ -1,4 +1,4 @@
-package util
+package cfg
 
 import (
 	"bytes"
@@ -10,36 +10,13 @@ import (
 	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/util"
 )
 
 var (
 	//cfg holds the current config information in a Config struct
 	cfg Config
 )
-
-// Config holds bot config information
-type Config struct {
-	Wadl struct {
-		LogLevel string `toml:"log-level"`
-		Prefix   string `toml:"prefix"`
-		Token    string `toml:"token"`
-		GuildID  string `toml:"guild-id"`
-	} `toml:"waddles" comment:"General Bot Configuration"`
-	Db struct {
-		Host string `toml:"host"`
-		Port string `toml:"port"`
-		User string `toml:"user"`
-		Pass string `toml:"pass"`
-		Name string `toml:"database-name"`
-		URL  string `toml:"url" commented:"true" comment:"uncomment to use a postgres URI instead of above"`
-	} `toml:"database" comment:"Postgresql Database Connection Information"`
-	NitroPerk struct {
-		BoosterChannel struct {
-			ParentID string `toml:"parent-id" comment:"Discord catagory ID for channels to be managed under"`
-		} `toml:"booster-channel" comment:"server booster personal channel options"`
-	} `toml:"nitro" comment:"perks related to being a server booster"`
-	configDir string
-}
 
 //ReadConfig parses the config file into a Config struct
 func ReadConfig() *Config {
@@ -59,7 +36,7 @@ func ReadConfig() *Config {
 
 	configFile := cfg.GetConfigFileLocation("waddles.toml")
 
-	if !FileExists(configFile) {
+	if !util.FileExists(configFile) {
 		cfg.configDir = ""
 
 		var bytes bytes.Buffer
@@ -102,9 +79,4 @@ func ReadConfig() *Config {
 	zerolog.SetGlobalLevel(logLevel)
 
 	return &cfg
-}
-
-//GetConfigFileLocation returns the full path of the requested configFile
-func (config Config) GetConfigFileLocation(configFile string) string {
-	return config.configDir + configFile
 }

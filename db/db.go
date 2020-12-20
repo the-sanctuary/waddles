@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog/log"
+	"github.com/the-sanctuary/waddles/cfg"
 	"github.com/the-sanctuary/waddles/db/model"
 	"github.com/the-sanctuary/waddles/util"
 	"gorm.io/driver/postgres"
@@ -21,7 +22,7 @@ var (
 )
 
 //BuildWadlDB connects to the database and returns a WadlDB{} holding the database connection
-func BuildWadlDB(config *util.Config) WadlDB {
+func BuildWadlDB(config *cfg.Config) WadlDB {
 	var dsn string
 
 	if config.Db.URL == "" {
