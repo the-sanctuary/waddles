@@ -14,9 +14,13 @@ var errorLogger errlog.Logger
 //InitializeLogging inits basic logging capabilities
 func InitializeLogging() {
 	//set pretty console output for zerolog
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC1123Z, FormatCaller: func(i interface{}) string {
-		return ""
-	}})
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stdout,
+		TimeFormat: time.RFC1123Z,
+		// FormatCaller: func(i interface{}) string {
+		// 	return fmt.Sprintf("%+v", i)
+		// },
+	})
 }
 
 //SetupLogging sets up errlog and zerolog and sets errlog to use zerolog to
