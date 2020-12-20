@@ -8,7 +8,7 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jackc/pgmock v0.0.0-20201204152224-4fe30f7445fd // indirect
-	github.com/jackc/pgx/v4 v4.10.0 // indirect
+	github.com/jackc/pgx/v4 v4.10.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/pelletier/go-toml v1.8.1
