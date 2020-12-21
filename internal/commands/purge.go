@@ -1,23 +1,19 @@
-package command
+package commands
 
 import (
 	"strconv"
 	"time"
 
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //Purge command
-var purge *Command = &Command{
+var Purge *command.Command = &command.Command{
 	Name:        "purge",
 	Description: "Remove message history.",
 	Usage:       "purge [num]",
-	Handler: func(c *Context) {
-		if !(util.SliceContains(c.Message.Member.Roles, "244943928913166338") || util.SliceContains(c.Message.Member.Roles, "183808574227611649")) { // TODO: permissions system
-			c.ReplyString("You must be a Lord of the Server or Royal Moderator to use this command.")
-			return
-		}
-
+	Handler: func(c *command.Context) {
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])
 			if util.DebugError(err) {

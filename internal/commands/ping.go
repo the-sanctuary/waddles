@@ -1,28 +1,29 @@
-package command
+package commands
 
 import (
 	"strconv"
 
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //Ping command
-var ping *Command = &Command{
+var Ping *command.Command = &command.Command{
 	Name:        "ping",
 	Aliases:     *&[]string{"pong"},
 	Description: "This pongs your ping(pong)!",
 	Usage:       "ping [count <num>]",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		c.ReplyString("Pong!")
 	},
-	SubCommands: []*Command{pingCount},
+	SubCommands: []*command.Command{PingCount},
 }
 
-var pingCount *Command = &Command{
+var PingCount *command.Command = &command.Command{
 	Name:        "count",
 	Description: "how many times to reply with pong",
 	Usage:       "ping",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])
 

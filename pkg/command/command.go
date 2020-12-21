@@ -1,6 +1,6 @@
 package command
 
-import "github.com/the-sanctuary/waddles/permissions"
+import "github.com/the-sanctuary/waddles/pkg/permissions"
 
 //Command  is the struct that holds information about a command
 type Command struct {

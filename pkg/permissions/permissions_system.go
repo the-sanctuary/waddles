@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //PermissionSystem manages all permission checking and storage

@@ -1,20 +1,21 @@
-package command
+package commands
 
 import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/the-sanctuary/waddles/db/model"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/internal/model"
+	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-var nitroChannel *Command = &Command{
+var NitroChannel *command.Command = &command.Command{
 	Name:        "channel",
 	Aliases:     *&[]string{"c"},
 	Description: "control your voice channel",
 	Usage:       "channel (register|release)",
-	SubCommands: []*Command{nitroChannelRegister, nitroChannelRelease},
-	Handler: func(c *Context) {
+	SubCommands: []*command.Command{NitroChannelRegister, NitroChannelRelease},
+	Handler: func(c *command.Context) {
 		//Check to see if a user already has a channel registered
 		var chann model.NitroUserChannel
 		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
@@ -27,12 +28,12 @@ var nitroChannel *Command = &Command{
 	},
 }
 
-var nitroChannelRelease *Command = &Command{
+var NitroChannelRelease *command.Command = &command.Command{
 	Name:        "release",
 	Aliases:     *&[]string{"rl"},
 	Description: "release your voice channel",
 	Usage:       "release",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		//Check to see if a user already has a channel registered
 		var chann model.NitroUserChannel
 		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
@@ -49,12 +50,12 @@ var nitroChannelRelease *Command = &Command{
 	},
 }
 
-var nitroChannelRegister *Command = &Command{
+var NitroChannelRegister *command.Command = &command.Command{
 	Name:        "register",
 	Aliases:     *&[]string{"r"},
 	Description: "register your voice channel",
 	Usage:       "register <name>",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		if len(c.Args) < 1 {
 			c.ReplyString("You must name supply a name for your channel")
 			return

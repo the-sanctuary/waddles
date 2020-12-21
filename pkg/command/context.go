@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/pkg/util"
 	"gorm.io/gorm"
 )
 
