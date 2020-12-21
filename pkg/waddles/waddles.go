@@ -16,8 +16,10 @@ import (
 //Waddles .
 type Waddles struct {
 	//Global Config
-	Config *cfg.Config
-	Router *command.Router
+	Config   *cfg.Config
+	Router   *command.Router
+	Database *db.WadlDB
+	Session  *discordgo.Session
 }
 
 //Run reads the Config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
@@ -26,19 +28,21 @@ func (w *Waddles) Run() {
 	w.Config = cfg.ReadConfig()
 	util.SetupLogging()
 
+	var err error
+
 	// Create a Discord session using our bot token (client secret)
-	session, err := discordgo.New("Bot " + w.Config.Wadl.Token)
+	w.Session, err = discordgo.New("Bot " + w.Config.Wadl.Token)
 	if util.DebugError(err) {
 		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
 	}
 
 	// Open connection to database
-	wdb := db.BuildWadlDB(w.Config)
-	wdb.Migrate()
+	w.Database = db.BuildWadlDB(w.Config)
+	w.Database.Migrate()
 
 	permSystem := permissions.BuildPermissionSystem(w.Config.GetConfigFileLocation("permissions.toml"))
 
-	r := command.BuildRouter(&wdb, &permSystem, w.Config)
+	r := command.BuildRouter(&w.Database, &permSystem, w.Config)
 
 	r.RegisterCommands(
 		commands.Ping,
@@ -53,20 +57,20 @@ func (w *Waddles) Run() {
 	w.Router = &r
 
 	// Register handlers
-	session.AddHandler(w.Router.Handler())
-	session.AddHandler(handler.TraceAllMessages)
+	w.Session.AddHandler(w.Router.Handler())
+	w.Session.AddHandler(handler.TraceAllMessages)
 
-	session.AddHandler(handlers.UserActivityTextChannel)
-	session.AddHandler(handlers.UserActivityVoiceChannel)
+	w.Session.AddHandler(handlers.UserActivityTextChannel)
+	w.Session.AddHandler(handlers.UserActivityVoiceChannel)
 
 	// Open a websocket connection to Discord and start listening
-	err = session.Open()
+	err = w.Session.Open()
 
 	if util.DebugError(err) {
 		log.Fatal().Err(err).Msg("Unable to open a connection to Discord.  Quitting....")
 	}
 
-	defer session.Close()
+	defer w.Session.Close()
 
 	// Print msg that the bot is running
 	log.Info().Msg("Waddles is now running.  Press CTRL-C to quit.")
