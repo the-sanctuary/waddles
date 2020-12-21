@@ -1,6 +1,6 @@
 package main
 
-import "github.com/the-sanctuary/waddles/internal/waddles"
+import "github.com/the-sanctuary/waddles/pkg/waddles"
 
 func main() {
 	wadl := new(waddles.Waddles)
