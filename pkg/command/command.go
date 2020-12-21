@@ -18,6 +18,7 @@ func (c *Command) Triggers() []string {
 	return append(c.Aliases, c.Name)
 }
 
+//HasSubcommands returns whether or not this command holds subcommands
 func (c *Command) HasSubcommands() bool {
 	if len(c.SubCommands) > 0 {
 		return true
@@ -25,6 +26,7 @@ func (c *Command) HasSubcommands() bool {
 	return false
 }
 
+//GeneratePermissionNode recursivly adds a  permission node to this permission system
 func (c *Command) GeneratePermissionNode(permSystem *permissions.PermissionSystem, baseNode string) {
 	newBaseNode := baseNode + c.Name
 
