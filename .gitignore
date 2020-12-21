@@ -5,7 +5,7 @@ permissions.toml
 production.env
 
 # Any binaries
-waddles
+./waddles
 bin/waddles
 
 # go test -cover output
