@@ -55,12 +55,6 @@ var nitroChannelRegister *Command = &Command{
 	Description: "register your voice channel",
 	Usage:       "register <name>",
 	Handler: func(c *Context) {
-		member, err := c.Session.GuildMember(c.Message.GuildID, c.Message.Author.ID)
-
-		if c.ReplyError(err) {
-			return
-		}
-
 		if len(c.Args) < 1 {
 			c.ReplyString("You must name supply a name for your channel")
 			return
