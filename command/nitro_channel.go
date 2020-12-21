@@ -61,58 +61,54 @@ var nitroChannelRegister *Command = &Command{
 			return
 		}
 
-		if util.SliceContains(member.Roles, "585559906871017475") { //TODO: read from config instead
-			if len(c.Args) < 1 {
-				c.ReplyString("You must name supply a name for your channel")
+		if len(c.Args) < 1 {
+			c.ReplyString("You must name supply a name for your channel")
+			return
+		}
+
+		//Check to see if a user already has a channel registered
+		var chann model.NitroUserChannel
+		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+
+		if chann.UserID == "" {
+			channelName := strings.Join(c.Args, " ")
+
+			if len(channelName) > 100 || len(channelName) < 4 {
+				c.ReplyStringf("Channel Name: `%s` is invalid. The length is out of bounds (4 < name < 100", channelName)
 				return
 			}
 
-			//Check to see if a user already has a channel registered
-			var chann model.NitroUserChannel
-			c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
-
-			if chann.UserID == "" {
-				channelName := strings.Join(c.Args, " ")
-
-				if len(channelName) > 100 || len(channelName) < 4 {
-					c.ReplyStringf("Channel Name: `%s` is invalid. The length is out of bounds (4 < name < 100", channelName)
-					return
-				}
-
-				permOverwrite := discordgo.PermissionOverwrite{
-					ID:    c.Message.Author.ID,
-					Type:  "1",
-					Allow: discordgo.PermissionManageChannels,
-				}
-
-				createdChannel, err := c.Session.GuildChannelCreateComplex(c.Message.GuildID, discordgo.GuildChannelCreateData{
-					Name:                 channelName,
-					Type:                 discordgo.ChannelTypeGuildVoice,
-					ParentID:             c.Router.Config.NitroPerk.BoosterChannel.ParentID,
-					PermissionOverwrites: []*discordgo.PermissionOverwrite{&permOverwrite},
-				})
-
-				if err != nil {
-					c.ReplyString("An error occured while trying to make your channel. Please try again. If this issue persists, contact an admin.")
-					util.DebugError(err)
-					return
-				}
-
-				// Make sure that the nitrochannel object is initialized properly.
-				chann.UserID = c.Message.Author.ID
-				chann.ChannelID = createdChannel.ID
-				chann.Name = createdChannel.Name
-				chann.Active = true
-
-				// Add the server to the database
-				c.DB().Create(&chann)
-
-				c.ReplyStringf("Your channel: `%s` has been registered.", channelName)
-			} else {
-				c.ReplyString("Sorry, you can only have one channel at a time. Please use the `release` subcommand to release your previous channel before `regsiter`ing a new one")
+			permOverwrite := discordgo.PermissionOverwrite{
+				ID:    c.Message.Author.ID,
+				Type:  "1",
+				Allow: discordgo.PermissionManageChannels,
 			}
+
+			createdChannel, err := c.Session.GuildChannelCreateComplex(c.Message.GuildID, discordgo.GuildChannelCreateData{
+				Name:                 channelName,
+				Type:                 discordgo.ChannelTypeGuildVoice,
+				ParentID:             c.Router.Config.NitroPerk.BoosterChannel.ParentID,
+				PermissionOverwrites: []*discordgo.PermissionOverwrite{&permOverwrite},
+			})
+
+			if err != nil {
+				c.ReplyString("An error occured while trying to make your channel. Please try again. If this issue persists, contact an admin.")
+				util.DebugError(err)
+				return
+			}
+
+			// Make sure that the nitrochannel object is initialized properly.
+			chann.UserID = c.Message.Author.ID
+			chann.ChannelID = createdChannel.ID
+			chann.Name = createdChannel.Name
+			chann.Active = true
+
+			// Add the server to the database
+			c.DB().Create(&chann)
+
+			c.ReplyStringf("Your channel: `%s` has been registered.", channelName)
 		} else {
-			c.ReplyString("You must be a <@&585559906871017475> to use this command.")
+			c.ReplyString("Sorry, you can only have one channel at a time. Please use the `release` subcommand to release your previous channel before `regsiter`ing a new one")
 		}
 	},
 }

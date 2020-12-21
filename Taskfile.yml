@@ -1,0 +1,50 @@
+version: '3'
+
+vars:
+  EXE: bin/waddles{{exeExt}}
+  MAIN_CMD: ./cmd/waddles
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true 
+
+  dev-postgres-down:
+    cmds:
+      - podman-compose -f deploy/development-compose.yml down
+
+  dev-postgres-up:
+    deps: [dev-postgres-down]
+    cmds:
+     - podman-compose -f deploy/development-compose.yml up -d
+
+  dev:
+    desc: run the bot locally
+    cmds:
+      - task: dev-postgres-up
+      -  go run {{.MAIN_CMD}}
+
+  test:
+    desc: run all tests
+    cmds:
+      - go test ./... -cover -covermode atomic
+
+  build:
+    desc: build executable to {{.EXE}}
+    cmds:
+      - go build -o {{.EXE}} {{.MAIN_CMD}}
+    sources:
+      - ./**/*.go
+    generates:
+      - bin/waddles
+
+  build-container:
+    desc: builds an OCI-container for waddles
+    cmds:
+      - podman build -t waddles .
+
+  todo:
+    desc: find all //TODO comments in the repo
+    cmds:
+      - grep -nr --exclude="Taskfile.yml" --exclude-dir=".git" "//TODO" . 

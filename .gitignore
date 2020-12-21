@@ -1,12 +1,15 @@
+# Any config files
 config/
 waddles.toml
+permissions.toml
+production.env
 
+# Any binaries
 waddles
 bin/waddles
 
-build/
-vendor/
-
-production.env
-
+# 
 coverage.txt
+
+#go-task cache dir
+.task
