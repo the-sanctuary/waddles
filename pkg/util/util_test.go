@@ -13,3 +13,20 @@ func Test_SliceContains(t *testing.T) {
 	assert.False(t, SliceContains(slice, "pump"))
 	assert.False(t, SliceContains(slice, "string"))
 }
+
+func Test_AbsInt(t *testing.T) {
+	assert.Equal(t, 123, AbsInt(123))
+	assert.Equal(t, 123, AbsInt(-123))
+	assert.Equal(t, 0, AbsInt(0))
+	assert.Equal(t, 0, AbsInt(-0))
+}
+
+func Test_FileExists(t *testing.T) {
+	assert.FileExists(t, "./util.go")
+	assert.True(t, FileExists("./util.go"))
+
+	assert.NoFileExists(t, "./fake_util.go")
+	assert.False(t, FileExists("./fake_util.go"))
+
+	assert.False(t, FileExists("not a path at all"))
+}

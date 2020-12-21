@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/rs/zerolog/log"
 )
 
 //RegisterTermSignals  -
@@ -31,11 +33,17 @@ func AbsInt(i int) int {
 	return int(math.Abs(float64(i)))
 }
 
-// FileExists checks if a path exists and is a file
+//FileExists returns true if the given path exists and isn't a directory
 func FileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
+	s, err := os.Stat(filename)
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+		log.Error().Err(err).Msgf("helpers.FileExists(%s) errored out:", err) // If the err wasn't expected, something really went wrong
+	} else if s == nil { // If no s is returned there is a different issue.
 		return false
 	}
-	return !info.IsDir()
+	return !s.IsDir()
 }
