@@ -10,7 +10,7 @@ import (
 	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 var (

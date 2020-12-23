@@ -13,17 +13,22 @@ tasks:
   dev-postgres-down:
     cmds:
       - podman-compose -f deploy/development-compose.yml down
+      - rm .task/.pgup
+    status:
+      - "! test -f .task/.pgup"
 
   dev-postgres-up:
-    deps: [dev-postgres-down]
     cmds:
      - podman-compose -f deploy/development-compose.yml up -d
+     - touch .task/.pgup
+    status:
+      - test -f ./.task/.pgup
 
-  dev:
-    desc: run the bot locally
+  run:
+    desc: run the bot locally wih
+    deps: [dev-postgres-up, build]
     cmds:
-      - task: dev-postgres-up
-      -  go run {{.MAIN_CMD}}
+      -  ./{{.EXE}}
 
   test:
     desc: run all tests

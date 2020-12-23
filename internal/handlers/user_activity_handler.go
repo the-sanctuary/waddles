@@ -1,13 +1,13 @@
-package handler
+package handlers
 
 import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/db"
-	"github.com/the-sanctuary/waddles/db/model"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/internal/model"
+	"github.com/the-sanctuary/waddles/pkg/db"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {

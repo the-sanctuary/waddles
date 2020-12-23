@@ -5,10 +5,10 @@ permissions.toml
 production.env
 
 # Any binaries
-waddles
+./waddles
 bin/waddles
 
-# 
+# go test -cover output
 coverage.txt
 
 #go-task cache dir

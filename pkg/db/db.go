@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/cfg"
-	"github.com/the-sanctuary/waddles/db/model"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/internal/model"
+	"github.com/the-sanctuary/waddles/pkg/cfg"
+	"github.com/the-sanctuary/waddles/pkg/util"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

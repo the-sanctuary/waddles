@@ -1,27 +1,29 @@
-package command
+package commands
 
 import (
 	"fmt"
 	"strings"
+
+	"github.com/the-sanctuary/waddles/pkg/command"
 )
 
-var debug *Command = &Command{
+var Debug *command.Command = &command.Command{
 	Name:        "debug",
 	Aliases:     []string{"dbg"},
 	Description: "bot debug interface",
 	Usage:       "",
-	SubCommands: []*Command{debugDumpPerms, debugListPerms},
-	Handler: func(c *Context) {
+	SubCommands: []*command.Command{DebugDumpPerms, DebugListPerms},
+	Handler: func(c *command.Context) {
 		c.ReplyHelp()
 	},
 }
 
-var debugListPerms *Command = &Command{
+var DebugListPerms *command.Command = &command.Command{
 	Name:        "listPerms",
 	Aliases:     []string{""},
 	Description: "lists text representation of permission system",
 	Usage:       "",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		tre := &c.Router.PermSystem.Tree
 
 		var lines []string
@@ -63,12 +65,12 @@ var debugListPerms *Command = &Command{
 	},
 }
 
-var debugDumpPerms *Command = &Command{
+var DebugDumpPerms *command.Command = &command.Command{
 	Name:        "dumpPerms",
 	Aliases:     []string{""},
 	Description: "dumps raw PermissionSystem struct",
 	Usage:       "",
-	Handler: func(c *Context) {
+	Handler: func(c *command.Context) {
 		tre := &c.Router.PermSystem.Tree
 		c.ReplyStringf("```%+v```", tre)
 	},

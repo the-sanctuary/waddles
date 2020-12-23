@@ -6,11 +6,11 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/cfg"
-	"github.com/the-sanctuary/waddles/db"
-	"github.com/the-sanctuary/waddles/db/model"
-	"github.com/the-sanctuary/waddles/permissions"
-	"github.com/the-sanctuary/waddles/util"
+	"github.com/the-sanctuary/waddles/internal/model"
+	"github.com/the-sanctuary/waddles/pkg/cfg"
+	"github.com/the-sanctuary/waddles/pkg/db"
+	"github.com/the-sanctuary/waddles/pkg/permissions"
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //Router is the central command multiplexer
@@ -31,18 +31,13 @@ func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *
 		Config:     cfg,
 	}
 
-	r.RegisterCommands(
-		ping,
-		purge,
-		uptime,
-		nitro,
-		debug,
-	)
-
-	r.generatePermissionNodes()
-	permSystem.AddReferences()
-
 	return r
+}
+
+func (r *Router) SetupPermissions() {
+	r.generatePermissionNodes()
+
+	r.PermSystem.AddReferences()
 }
 
 //RegisterCommands adds a command(s) to the Router
