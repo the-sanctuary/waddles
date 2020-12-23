@@ -37,12 +37,13 @@ func (w *Waddles) Run() {
 	}
 
 	// Open connection to database
-	w.Database = db.BuildWadlDB(w.Config)
+	wdb := db.BuildWadlDB(w.Config)
+	w.Database = &wdb
 	w.Database.Migrate()
 
 	permSystem := permissions.BuildPermissionSystem(w.Config.GetConfigFileLocation("permissions.toml"))
 
-	r := command.BuildRouter(&w.Database, &permSystem, w.Config)
+	r := command.BuildRouter(w.Database, &permSystem, w.Config)
 
 	r.RegisterCommands(
 		commands.Ping,
