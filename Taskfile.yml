@@ -32,17 +32,35 @@ tasks:
 
   test:
     desc: run all tests
+    dir: .
     cmds:
-      - go test ./... -cover -covermode atomic
+      - go test ./...
+
+  testv:
+    desc: run all tests verbosely
+    dir: .
+    cmds:
+      - go test -v ./... -cover -covermode atomic
 
   build:
     desc: build executable to {{.EXE}}
+    deps: [build-example]
     cmds:
       - go build -o {{.EXE}} {{.MAIN_CMD}}
     sources:
       - ./**/*.go
     generates:
       - bin/waddles
+
+  build-example:
+    desc: Build the example plugin
+    dir: example_plugin/
+    cmds:
+      - go build --buildmode=plugin -trimpath -o ../plugins/example.so .
+    sources:
+      - ./**/*.go
+    generates:
+      - ../plugins/example.so
 
   build-container:
     desc: builds an OCI-container for waddles

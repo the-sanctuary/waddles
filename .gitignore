@@ -7,9 +7,13 @@ production.env
 # Any binaries
 ./waddles
 bin/waddles
+plugins/
+*.so
 
 # go test -cover output
 coverage.txt
 
 #go-task cache dir
 .task
+
+example_plugin

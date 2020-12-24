@@ -1,6 +1,9 @@
 package waddles
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/internal/commands"
@@ -77,4 +80,15 @@ func (w *Waddles) Run() {
 	log.Info().Msg("Waddles is now running.  Press CTRL-C to quit.")
 	util.MarkStartTime()
 	util.RegisterTermSignals()
+}
+
+func (w *Waddles) LoadPlugins() {
+	cwd, _ := os.Getwd() //TODO handle error
+
+	pluginDir := cwd + "/plugins/"
+
+	fmt.Println(cwd)
+	fmt.Println(pluginDir)
+
+	// filepath.Glob()
 }
