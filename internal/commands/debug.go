@@ -7,19 +7,20 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 )
 
+//Debug debug command
 var Debug *cmd.Command = &cmd.Command{
 	Name:        "debug",
 	Aliases:     []string{"dbg"},
 	Description: "bot debug interface",
 	Usage:       "",
 	HideInHelp:  true,
-	SubCommands: []*cmd.Command{DebugDumpPerms, DebugListPerms},
+	SubCommands: []*cmd.Command{debugDumpPerms, debugListPerms},
 	Handler: func(c *cmd.Context) {
 		c.ReplyHelp()
 	},
 }
 
-var DebugListPerms *cmd.Command = &cmd.Command{
+var debugListPerms *cmd.Command = &cmd.Command{
 	Name:        "listPerms",
 	Aliases:     []string{""},
 	Description: "lists text representation of permission system",
@@ -66,7 +67,7 @@ var DebugListPerms *cmd.Command = &cmd.Command{
 	},
 }
 
-var DebugDumpPerms *cmd.Command = &cmd.Command{
+var debugDumpPerms *cmd.Command = &cmd.Command{
 	Name:        "dumpPerms",
 	Aliases:     []string{""},
 	Description: "dumps raw PermissionSystem struct",
