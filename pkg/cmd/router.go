@@ -1,7 +1,8 @@
-package command
+package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -42,6 +43,7 @@ func (r *Router) SetupPermissions() {
 
 //RegisterCommands adds a command(s) to the Router
 func (r *Router) RegisterCommands(cmds ...*Command) {
+	sort.Slice(cmds, func(i, j int) bool { return cmds[i].Name < cmds[j].Name })
 	for _, c := range cmds {
 		r.Commands = append(r.Commands, c)
 	}
@@ -80,7 +82,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			ctx := buildContext(r, session, message, deepestCmd, args)
 
 			if !r.userHasCorrectPermissions(session, message.Author, node) {
-				ctx.ReplyStringf("You don't have the required permission node `%s` for this command.", node)
+				ctx.ReplyStringf("You don't have the required permission node `%s` for this cmd.", node)
 				return
 			}
 
@@ -89,18 +91,32 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			//Update UserActivity entry's CommandCount
 			var ua model.UserActivity
 			tx := db.Instance.DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
-			util.DebugError(tx.Error)
+			if util.DebugError(tx.Error) {
+				log.Error().Err(tx.Error).Msg("An error occured.")
+			}
 			ua.CommandCount++
 			db.Instance.DB.Save(&ua)
 		}
 	}
 }
 
-func (r Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
+func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
 	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
-	util.DebugError(err)
+	if util.DebugError(err) {
+		log.Error().Err(err).Msg("An error has occurred.")
+		return false
+	}
+
+	if r.userHasBypassPermissions(user) {
+		log.Debug().Msgf("User %s (%s) is on the permission bypass list.", user.ID, user.Username)
+		return true
+	}
 
 	return r.PermSystem.UserHasPermissionNode(gm, nodeIdentifier)
+}
+
+func (r *Router) userHasBypassPermissions(user *discordgo.User) bool {
+	return util.SliceContains(r.Config.Permissions.UserOverride, user.ID)
 }
 
 //Finds and returns the deepest subcommand for a given command and arg slice

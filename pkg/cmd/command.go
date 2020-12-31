@@ -1,6 +1,10 @@
-package command
+package cmd
 
-import "github.com/the-sanctuary/waddles/pkg/permissions"
+import (
+	"fmt"
+
+	"github.com/the-sanctuary/waddles/pkg/permissions"
+)
 
 //Command  is the struct that holds information about a command
 type Command struct {
@@ -8,7 +12,9 @@ type Command struct {
 	Aliases     []string
 	Description string
 	//Usage format: http://docopt.org/
-	Usage       string
+	Usage string
+	//HideInHelp whether or not this should be hidden from the help command.
+	HideInHelp  bool
 	SubCommands []*Command
 	Handler     ContextExecutor
 }
@@ -37,4 +43,9 @@ func (c *Command) GeneratePermissionNode(permSystem *permissions.PermissionSyste
 			subCmd.GeneratePermissionNode(permSystem, newBaseNode+".")
 		}
 	}
+}
+
+//SPrintHelp returns the formatted help text string
+func (c *Command) SPrintHelp() string {
+	return fmt.Sprintf("%s - %s", c.Usage, c.Description)
 }

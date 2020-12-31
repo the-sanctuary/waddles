@@ -9,13 +9,13 @@ import (
 )
 
 func BasePermissionSystem() PermissionSystem {
-	// router := command.Router{
+	// router := cmd.Router{
 	// 	Prefix: "~",
 	// }
 
 	// router.RegisterCommands(
-	// 	&command.Command{Name: "test1node1"},
-	// 	&command.Command{Name: "test2node1"},
+	// 	&cmd.Command{Name: "test1node1"},
+	// 	&cmd.Command{Name: "test2node1"},
 	// )
 
 	permSystem := PermissionSystem{
@@ -64,26 +64,26 @@ const tomlBytesAll = (`
 
 func Test_generateNodesFromCommand(t *testing.T) {
 	t.Skip()
-	// testCmdSub1 := &command.Command{
+	// testCmdSub1 := &cmd.Command{
 	// 	Name:    "sub1",
-	// 	Handler: func(c *command.Context) {},
+	// 	Handler: func(c *cmd.Context) {},
 	// }
 
-	// testCmdSub21 := &command.Command{
+	// testCmdSub21 := &cmd.Command{
 	// 	Name:    "sub21",
-	// 	Handler: func(c *command.Context) {},
+	// 	Handler: func(c *cmd.Context) {},
 	// }
 
-	// testCmdSub2 := &command.Command{
+	// testCmdSub2 := &cmd.Command{
 	// 	Name:        "sub2",
-	// 	Handler:     func(c *command.Context) {},
-	// 	SubCommands: []*command.Command{testCmdSub21},
+	// 	Handler:     func(c *cmd.Context) {},
+	// 	SubCommands: []*cmd.Command{testCmdSub21},
 	// }
 
-	// testCmd := &command.Command{
+	// testCmd := &cmd.Command{
 	// 	Name:        "testcmd",
-	// 	Handler:     func(c *command.Context) {},
-	// 	SubCommands: []*command.Command{testCmdSub1, testCmdSub2},
+	// 	Handler:     func(c *cmd.Context) {},
+	// 	SubCommands: []*cmd.Command{testCmdSub1, testCmdSub2},
 	// }
 
 	// assert.NotNil(t, testCmd)

@@ -4,16 +4,17 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/cmd"
+
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //Purge command
-var Purge *command.Command = &command.Command{
+var Purge *cmd.Command = &cmd.Command{
 	Name:        "purge",
 	Description: "Remove message history.",
 	Usage:       "purge [num]",
-	Handler: func(c *command.Context) {
+	Handler: func(c *cmd.Context) {
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])
 			if util.DebugError(err) {

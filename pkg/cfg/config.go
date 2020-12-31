@@ -1,5 +1,7 @@
 package cfg
 
+import "path"
+
 // Config holds bot config information
 type Config struct {
 	configDir string
@@ -25,9 +27,13 @@ type Config struct {
 			ParentID string `toml:"parent-id" comment:"Discord catagory ID for channels to be managed under"`
 		} `toml:"booster-channel" comment:"server booster personal channel options"`
 	} `toml:"nitro" comment:"perks related to being a server booster"`
+
+	Permissions struct {
+		UserOverride []string `toml:"bypass-users" comment:"list of user IDs who bypass the permission's system (useful for testing)"`
+	} `toml:"permissions" comment:"settings related to the permissions system"`
 }
 
 //GetConfigFileLocation returns the full path of the requested configFile
 func (config Config) GetConfigFileLocation(configFile string) string {
-	return config.configDir + configFile
+	return path.Clean(config.configDir + "/" + configFile)
 }

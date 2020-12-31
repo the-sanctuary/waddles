@@ -4,26 +4,28 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/cmd"
 )
 
-var Debug *command.Command = &command.Command{
+//Debug debug command
+var Debug *cmd.Command = &cmd.Command{
 	Name:        "debug",
 	Aliases:     []string{"dbg"},
 	Description: "bot debug interface",
 	Usage:       "",
-	SubCommands: []*command.Command{DebugDumpPerms, DebugListPerms},
-	Handler: func(c *command.Context) {
+	HideInHelp:  true,
+	SubCommands: []*cmd.Command{debugDumpPerms, debugListPerms},
+	Handler: func(c *cmd.Context) {
 		c.ReplyHelp()
 	},
 }
 
-var DebugListPerms *command.Command = &command.Command{
+var debugListPerms *cmd.Command = &cmd.Command{
 	Name:        "listPerms",
 	Aliases:     []string{""},
 	Description: "lists text representation of permission system",
 	Usage:       "",
-	Handler: func(c *command.Context) {
+	Handler: func(c *cmd.Context) {
 		tre := &c.Router.PermSystem.Tree
 
 		var lines []string
@@ -65,12 +67,12 @@ var DebugListPerms *command.Command = &command.Command{
 	},
 }
 
-var DebugDumpPerms *command.Command = &command.Command{
+var debugDumpPerms *cmd.Command = &cmd.Command{
 	Name:        "dumpPerms",
 	Aliases:     []string{""},
 	Description: "dumps raw PermissionSystem struct",
 	Usage:       "",
-	Handler: func(c *command.Context) {
+	Handler: func(c *cmd.Context) {
 		tre := &c.Router.PermSystem.Tree
 		c.ReplyStringf("```%+v```", tre)
 	},
