@@ -6,7 +6,8 @@ import (
 	"github.com/the-sanctuary/waddles/internal/commands"
 	"github.com/the-sanctuary/waddles/internal/handlers"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
-	"github.com/the-sanctuary/waddles/pkg/command"
+	"github.com/the-sanctuary/waddles/pkg/cmd"
+
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/handler"
 	"github.com/the-sanctuary/waddles/pkg/permissions"
@@ -17,7 +18,7 @@ import (
 type Waddles struct {
 	//Global Config
 	Config   *cfg.Config
-	Router   *command.Router
+	Router   *cmd.Router
 	Database *db.WadlDB
 	Session  *discordgo.Session
 }
@@ -43,7 +44,7 @@ func (w *Waddles) Run() {
 
 	permSystem := permissions.BuildPermissionSystem(w.Config.GetConfigFileLocation("permissions.toml"))
 
-	r := command.BuildRouter(w.Database, &permSystem, w.Config)
+	r := cmd.BuildRouter(w.Database, &permSystem, w.Config)
 
 	r.RegisterCommands(
 		commands.Ping,
@@ -51,6 +52,8 @@ func (w *Waddles) Run() {
 		commands.Uptime,
 		commands.Nitro,
 		commands.Debug,
+		commands.Commands,
+		commands.Help,
 	)
 
 	r.SetupPermissions()
