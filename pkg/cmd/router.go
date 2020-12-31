@@ -108,7 +108,7 @@ func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *dis
 	}
 
 	if r.userHasBypassPermissions(user) {
-		log.Debug().Msgf("User %s is on the permission bypass list.", user.ID)
+		log.Debug().Msgf("User %s (%s) is on the permission bypass list.", user.ID, user.Username)
 		return true
 	}
 
