@@ -1,5 +1,7 @@
 package cfg
 
+import "path"
+
 // Config holds bot config information
 type Config struct {
 	configDir string
@@ -33,5 +35,5 @@ type Config struct {
 
 //GetConfigFileLocation returns the full path of the requested configFile
 func (config Config) GetConfigFileLocation(configFile string) string {
-	return config.configDir + configFile
+	return path.Clean(config.configDir + "/" + configFile)
 }
