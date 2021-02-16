@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/util"
-	"gorm.io/gorm"
 )
 
 //ContextExecutor represents an executor for a context execution
@@ -25,9 +25,9 @@ type Context struct {
 	Router *Router
 }
 
-//DB returns the current gorm.DB instance
-func (ctx *Context) DB() *gorm.DB {
-	return ctx.Router.WadlDB.DB
+//DB returns the current db.WadlDB instance
+func (ctx *Context) DB() *db.WadlDB {
+	return ctx.Router.WadlDB
 }
 
 //ReplyString replies to the contextual channel with the string provided.

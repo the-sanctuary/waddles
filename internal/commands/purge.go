@@ -13,7 +13,7 @@ import (
 var Purge *cmd.Command = &cmd.Command{
 	Name:        "purge",
 	Description: "Remove message history.",
-	Usage:       "purge [num]",
+	Usage:       "purge <num>",
 	Handler: func(c *cmd.Context) {
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])

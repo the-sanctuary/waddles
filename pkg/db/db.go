@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/internal/model"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/util"
 	"gorm.io/driver/postgres"
@@ -13,7 +12,7 @@ import (
 
 //WadlDB holds the gorm.DB{} database connection
 type WadlDB struct {
-	DB *gorm.DB
+	*gorm.DB
 }
 
 var (
@@ -50,8 +49,8 @@ func BuildWadlDB(config *cfg.Config) WadlDB {
 	return *Instance
 }
 
-//Migrate calls gorm.DB.AutoMigrate() on all models
+//Migrate calls gorm.DB.AutoMigrate() on all dbs
 func (wdb *WadlDB) Migrate() {
-	wdb.DB.AutoMigrate(&model.UserActivity{})
-	wdb.DB.AutoMigrate(&model.NitroUserChannel{})
+	wdb.AutoMigrate(&UserActivity{})
+	wdb.AutoMigrate(&NitroUserChannel{})
 }
