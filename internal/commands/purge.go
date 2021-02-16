@@ -25,6 +25,7 @@ var Purge *cmd.Command = &cmd.Command{
 			//make sure n is positve or not zero
 			if n < 1 {
 				c.ReplyString("You must delete at least one message.")
+				return
 			}
 
 			messages, err := c.Session.ChannelMessages(c.Message.ChannelID, n+1, "", "", "")
