@@ -13,7 +13,7 @@ import (
 var Purge *cmd.Command = &cmd.Command{
 	Name:        "purge",
 	Description: "Remove message history.",
-	Usage:       "purge [num]",
+	Usage:       "purge <num>",
 	Handler: func(c *cmd.Context) {
 		if len(c.Args) >= 1 {
 			n, err := strconv.Atoi(c.Args[0])
@@ -25,6 +25,7 @@ var Purge *cmd.Command = &cmd.Command{
 			//make sure n is positve or not zero
 			if n < 1 {
 				c.ReplyString("You must delete at least one message.")
+				return
 			}
 
 			messages, err := c.Session.ChannelMessages(c.Message.ChannelID, n+1, "", "", "")

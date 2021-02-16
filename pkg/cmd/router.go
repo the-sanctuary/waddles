@@ -7,7 +7,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
-	"github.com/the-sanctuary/waddles/internal/model"
+
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/permissions"
@@ -89,13 +89,14 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			deepestCmd.Handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
-			var ua model.UserActivity
-			tx := db.Instance.DB.Where(&model.UserActivity{UserID: message.Author.ID}).FirstOrCreate(&ua)
+			var ua db.UserActivity
+			tx := db.Instance.Where("discord_id = ?", message.Author.ID).FirstOrInit(&ua)
 			if util.DebugError(tx.Error) {
 				log.Error().Err(tx.Error).Msg("An error occured.")
 			}
 			ua.CommandCount++
-			db.Instance.DB.Save(&ua)
+			ua.DiscordID = message.Author.ID
+			db.Instance.Save(&ua)
 		}
 	}
 }

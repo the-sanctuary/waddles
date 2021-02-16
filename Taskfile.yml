@@ -10,14 +10,22 @@ tasks:
       - task -l
     silent: true 
 
-  dev-postgres-down:
+  postgres-reset:
+    desc: reset the postgres container's data volume
+    deps: [postgres-down]
+    cmds:
+      - podman volume rm deploy_postgres_data
+
+  postgres-down:
+    desc: take down a container instance of postgres for development with 'task run'
     cmds:
       - podman-compose -f deploy/development-compose.yml down
       - rm .task/.pgup
     status:
       - "! test -f .task/.pgup"
 
-  dev-postgres-up:
+  postgres-up:
+    desc: put up a container instance of postgres for development with 'task run'
     cmds:
      - podman-compose -f deploy/development-compose.yml up -d
      - touch .task/.pgup
@@ -26,7 +34,7 @@ tasks:
 
   run:
     desc: run the bot locally wih
-    deps: [dev-postgres-up, build]
+    deps: [postgres-up, build]
     cmds:
       -  ./{{.EXE}}
 

@@ -1,4 +1,4 @@
-package model
+package db
 
 import (
 	"time"
@@ -9,8 +9,8 @@ import (
 //NitroUserChannel represents a voice channel registered to a nitro booster
 type NitroUserChannel struct {
 	gorm.Model
+	User
 	Name      string
-	UserID    string
 	ChannelID string
 	Active    bool
 	LastUsed  *time.Time

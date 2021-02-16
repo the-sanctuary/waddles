@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/the-sanctuary/waddles/internal/model"
 	"github.com/the-sanctuary/waddles/pkg/cmd"
+	"github.com/the-sanctuary/waddles/pkg/db"
 
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
@@ -18,10 +18,10 @@ var NitroChannel *cmd.Command = &cmd.Command{
 	SubCommands: []*cmd.Command{NitroChannelRegister, NitroChannelRelease},
 	Handler: func(c *cmd.Context) {
 		//Check to see if a user already has a channel registered
-		var chann model.NitroUserChannel
-		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+		var chann db.NitroUserChannel
+		c.DB().Where("discord_id = ?", c.Message.Author.ID).First(&chann)
 
-		if chann.UserID == "" {
+		if chann.DiscordID == "" {
 			c.ReplyString("You don't have a channel.")
 		} else {
 			c.ReplyStringf("Your channel is named: %s", chann.Name)
@@ -36,10 +36,10 @@ var NitroChannelRelease *cmd.Command = &cmd.Command{
 	Usage:       "release",
 	Handler: func(c *cmd.Context) {
 		//Check to see if a user already has a channel registered
-		var chann model.NitroUserChannel
-		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+		var chann db.NitroUserChannel
+		c.DB().Where("discord_id = ?", c.Message.Author.ID).First(&chann)
 
-		if chann.UserID == "" {
+		if chann.DiscordID == "" {
 			c.ReplyString("You don't have a channel to release!")
 		} else {
 			c.Session.ChannelDelete(chann.ChannelID)
@@ -63,10 +63,10 @@ var NitroChannelRegister *cmd.Command = &cmd.Command{
 		}
 
 		//Check to see if a user already has a channel registered
-		var chann model.NitroUserChannel
-		c.DB().Where(&model.NitroUserChannel{UserID: c.Message.Author.ID}).First(&chann)
+		var chann db.NitroUserChannel
+		c.DB().Where("discord_id = ?", c.Message.Author.ID).First(&chann)
 
-		if chann.UserID == "" {
+		if chann.DiscordID == "" {
 			channelName := strings.Join(c.Args, " ")
 
 			if len(channelName) > 100 || len(channelName) < 4 {
@@ -94,7 +94,7 @@ var NitroChannelRegister *cmd.Command = &cmd.Command{
 			}
 
 			// Make sure that the nitrochannel object is initialized properly.
-			chann.UserID = c.Message.Author.ID
+			chann.DiscordID = c.Message.Author.ID
 			chann.ChannelID = createdChannel.ID
 			chann.Name = createdChannel.Name
 			chann.Active = true

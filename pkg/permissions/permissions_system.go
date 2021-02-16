@@ -73,12 +73,27 @@ func (pm *PermissionSystem) UserHasPermissionNode(member *discordgo.Member, node
 	for _, mn := range memberNodes {
 		nodeidents = append(nodeidents, mn)
 		log.Trace().Msgf("mn:%s | node:%s", mn, nodeIdentifer)
-		if mn == nodeIdentifer {
+		if matchNodes(mn, nodeIdentifer) {
 			return true
 		}
 	}
 
 	log.Trace().Msgf("User: `%s` has perms: %+v", member.User.Username, nodeidents)
+
+	return false
+}
+
+func matchNodes(actualNode string, testNode string) bool {
+	if actualNode == testNode {
+		return true
+	}
+
+	// splitActualNode := strings.Split(actualNode, ".")
+	// splitTestNode := strings.Split(testNode, ".")
+
+	// for i := 0; i < len(splitActualNode); i++ {
+	// 	if splitActualNode[i] ==
+	// }
 
 	return false
 }

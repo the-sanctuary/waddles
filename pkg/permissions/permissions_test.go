@@ -62,6 +62,10 @@ const tomlBytesAll = (`
 	]
 `)
 
+func Test_matchNodes(t *testing.T) {
+assert.True(t, matchNodes("", ""))
+}
+
 func Test_generateNodesFromCommand(t *testing.T) {
 	t.Skip()
 	// testCmdSub1 := &cmd.Command{
