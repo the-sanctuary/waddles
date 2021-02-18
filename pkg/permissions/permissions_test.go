@@ -63,7 +63,18 @@ const tomlBytesAll = (`
 `)
 
 func Test_matchNodes(t *testing.T) {
-assert.True(t, matchNodes("", ""))
+	assert.True(t, matchNodes("test.sub.perm1", "test.*"))
+	assert.True(t, matchNodes("test.sub.perm1", "test.sub.*"))
+	assert.True(t, matchNodes("test.sub.perm1", "test.sub.perm1"))
+
+	assert.False(t, matchNodes("test.sub.perm1", "test"))
+	assert.False(t, matchNodes("test.sub.perm1", "test.sub"))
+	assert.False(t, matchNodes("test.sub.perm1", "test.sub.perm2"))
+
+	assert.False(t, matchNodes("test", "test.sub.perm1"))
+	assert.False(t, matchNodes("test.sub", "test.sub.perm1"))
+
+	assert.False(t, matchNodes("test.*.test.*", "test.sub.test.sub"))
 }
 
 func Test_generateNodesFromCommand(t *testing.T) {

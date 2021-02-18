@@ -1,7 +1,9 @@
 package permissions
 
 import (
+	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
@@ -88,12 +90,13 @@ func matchNodes(actualNode string, testNode string) bool {
 		return true
 	}
 
-	// splitActualNode := strings.Split(actualNode, ".")
-	// splitTestNode := strings.Split(testNode, ".")
-
-	// for i := 0; i < len(splitActualNode); i++ {
-	// 	if splitActualNode[i] ==
-	// }
+	if strings.Contains(testNode, "*") {
+		wildcard := strings.TrimSuffix(testNode, ".*")
+		fmt.Println(wildcard)
+		if strings.HasPrefix(actualNode, wildcard) {
+			return true
+		}
+	}
 
 	return false
 }
