@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
@@ -50,8 +51,12 @@ func (ctx *Context) ReplyHelp() *discordgo.Message {
 	return ctx.ReplyStringf("Usage: `%s`", ctx.Command.SPrintHelp())
 }
 
+//ReplyError returns a generic error to the user
 func (ctx *Context) ReplyError(err error) bool {
 	if err != nil {
+		if util.SliceContains(cfg.ReadConfig().Permissions.DebugUsers, ctx.Message.Author.ID) {
+			ctx.Session.ChannelMessage()
+		}
 		ctx.ReplyString("An error occured. Check the log for details.")
 		util.DebugError(err)
 		return true

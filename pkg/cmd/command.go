@@ -6,8 +6,9 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-//Command  is the struct that holds information about a command
+//Command holds information about a command and what to do
 type Command struct {
+	//Name is the primary trigger and is used for each level of a permission node
 	Name        string
 	Aliases     []string
 	Description string
@@ -37,7 +38,6 @@ func (c *Command) GeneratePermissionNode(baseNode string) []string {
 	nodes := make([]string, 0)
 
 	newBaseNode := baseNode + c.Name
-
 	nodes = append(nodes, newBaseNode)
 
 	if c.HasSubcommands() {
@@ -50,7 +50,7 @@ func (c *Command) GeneratePermissionNode(baseNode string) []string {
 	return nodes
 }
 
-//SPrintHelp returns the formatted help text string
+//SPrintHelp returns the command's Usage and Description formatted in a nice way
 func (c *Command) SPrintHelp() string {
 	return fmt.Sprintf("%s - %s", c.Usage, c.Description)
 }

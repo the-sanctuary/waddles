@@ -144,15 +144,14 @@ func buildContext(router *Router, session *discordgo.Session, message *discordgo
 }
 
 func (r *Router) generatePermissionNodes() {
-	var nodes []string
-
 	for _, cmd := range r.Commands {
-		nodes = cmd.GeneratePermissionNode("")
-	}
+		rawNodes := cmd.GeneratePermissionNode("")
 
-	for _, nodeString := range nodes {
-		r.PermSystem.AddPermissionNode(nodeString)
+		for _, rawNode := range rawNodes {
+			r.PermSystem.AddPermissionNode(rawNode)
+		}
 	}
 }
 
+//TODO properly handle being pinged
 func handlePing(session *discordgo.Session, message *discordgo.MessageCreate) {}
