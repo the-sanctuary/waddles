@@ -10,7 +10,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-//UserActivityTextChannel
+//UserActivityTextChannel tracks when a user sends a message to a text channel
 func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -27,7 +27,7 @@ func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	db.Instance.Save(&ua)
 }
 
-//UserActivityTextChannel
+//UserActivityVoiceChannel tracks when users join or leave a voice channel
 func UserActivityVoiceChannel(s *discordgo.Session, vsu *discordgo.VoiceStateUpdate) {
 	if vsu.UserID == s.State.User.ID {
 		return
