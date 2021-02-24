@@ -43,6 +43,11 @@ tasks:
     cmds:
       - go test ./... -cover -covermode atomic
 
+  testv:
+    desc: run all tests verbosely
+    cmds:
+      - go test ./... -cover -covermode atomic -v
+
   build:
     desc: build executable to {{.EXE}}
     cmds:
