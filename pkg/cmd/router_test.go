@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,8 +59,6 @@ func Test_GeneratePermissionNodes(t *testing.T) {
 	r.generatePermissionNodes()
 
 	generatedNodes := r.PermSystem.Nodes
-
-	fmt.Printf("%+v", generatedNodes)
 
 	assert.Equal(t, "testcmd", generatedNodes[0].Identifier)
 	assert.Equal(t, "testcmd.sub1", generatedNodes[1].Identifier)

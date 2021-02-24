@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-
-	"github.com/the-sanctuary/waddles/pkg/permissions"
 )
 
 //Command  is the struct that holds information about a command
@@ -32,17 +30,22 @@ func (c *Command) HasSubcommands() bool {
 	return false
 }
 
-//GeneratePermissionNode recursivly adds a  permission node to this permission system
-func (c *Command) GeneratePermissionNode(permSystem *permissions.PermissionSystem, baseNode string) {
+//GeneratePermissionNode recursivly generates permission nodes for this and all subcommands and returns them
+func (c *Command) GeneratePermissionNode(baseNode string) []string {
+	nodes := make([]string, 0)
+
 	newBaseNode := baseNode + c.Name
 
-	permSystem.AddPermissionNode(newBaseNode)
+	nodes = append(nodes, newBaseNode)
 
 	if c.HasSubcommands() {
 		for _, subCmd := range c.SubCommands {
-			subCmd.GeneratePermissionNode(permSystem, newBaseNode+".")
+			newNodes := subCmd.GeneratePermissionNode(newBaseNode + ".")
+			nodes = append(nodes, newNodes...)
 		}
 	}
+
+	return nodes
 }
 
 //SPrintHelp returns the formatted help text string

@@ -134,6 +134,7 @@ func findDeepestCommand(prevCmd *Command, args []string, node string) (*Command,
 }
 
 //returns the command triggered by the provided string, otherwise returns (false, nil)
+//TODO: test this
 func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
 	for _, cmd := range cmds {
 		triggers := cmd.Triggers()
@@ -156,8 +157,14 @@ func buildContext(router *Router, session *discordgo.Session, message *discordgo
 }
 
 func (r *Router) generatePermissionNodes() {
+	var nodes []string
+
 	for _, cmd := range r.Commands {
-		cmd.GeneratePermissionNode(r.PermSystem, "")
+		nodes = cmd.GeneratePermissionNode("")
+	}
+
+	for _, nodeString := range nodes {
+		r.PermSystem.AddPermissionNode(nodeString)
 	}
 }
 
