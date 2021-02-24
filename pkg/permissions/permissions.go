@@ -7,7 +7,7 @@ import (
 )
 
 type permissionSet struct {
-	Nodes       []*permissionNode
+	Nodes       []*PermissionNode
 	rawNodes    []string `toml:"nodes"`
 	Groups      []*permissionGroup
 	Name        string
@@ -27,7 +27,7 @@ type permissionTree struct {
 	Groups []permissionGroup
 }
 
-type permissionNode struct {
+type PermissionNode struct {
 	Identifier string
 }
 

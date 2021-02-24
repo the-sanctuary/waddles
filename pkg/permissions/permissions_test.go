@@ -20,7 +20,7 @@ func BasePermissionSystem() PermissionSystem {
 
 	permSystem := PermissionSystem{
 		Tree:  permissionTree{},
-		Nodes: make([]*permissionNode, 0),
+		Nodes: make([]*PermissionNode, 0),
 	}
 
 	// router.generatePermissionNodes()
