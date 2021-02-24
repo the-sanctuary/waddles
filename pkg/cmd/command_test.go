@@ -43,3 +43,17 @@ func Test_GeneratePermissionNode(t *testing.T) {
 	assert.Equal(t, "testcmd.sub", nodes[1])
 	assert.Equal(t, "testcmd.sub.subsub", nodes[2])
 }
+
+func Test_triggerCheck(t *testing.T) {
+	testCmd := &Command{
+		Name:        "testcmd",
+		Handler:     func(c *Context) {},
+		SubCommands: []*Command{},
+	}
+
+	commands := []*Command{testCmd}
+
+	flag, cmd := triggerCheck("testcmd", commands)
+	assert.True(t, flag)
+	assert.Equal(t, testCmd, cmd)
+}

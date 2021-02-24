@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+
+	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
 //Command  is the struct that holds information about a command
@@ -51,4 +53,16 @@ func (c *Command) GeneratePermissionNode(baseNode string) []string {
 //SPrintHelp returns the formatted help text string
 func (c *Command) SPrintHelp() string {
 	return fmt.Sprintf("%s - %s", c.Usage, c.Description)
+}
+
+//returns true and the command triggered by the provided string, otherwise returns (false, nil)
+func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
+	for _, cmd := range cmds {
+		triggers := cmd.Triggers()
+
+		if util.SliceContains(triggers, trigger) {
+			return true, cmd
+		}
+	}
+	return false, nil
 }

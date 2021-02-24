@@ -133,19 +133,6 @@ func findDeepestCommand(prevCmd *Command, args []string, node string) (*Command,
 	return prevCmd, args[1:], node
 }
 
-//returns the command triggered by the provided string, otherwise returns (false, nil)
-//TODO: test this
-func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
-	for _, cmd := range cmds {
-		triggers := cmd.Triggers()
-
-		if util.SliceContains(triggers, trigger) {
-			return true, cmd
-		}
-	}
-	return false, nil
-}
-
 func buildContext(router *Router, session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string) Context {
 	return *&Context{
 		Router:  router,
