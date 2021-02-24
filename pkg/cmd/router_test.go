@@ -54,8 +54,7 @@ func Test_GeneratePermissionNodes(t *testing.T) {
 		},
 	}
 
-	r.RegisterCommands(testCmd)
-
+	r.RegisterCommands([]*Command{testCmd})
 	r.generatePermissionNodes()
 
 	generatedNodes := r.PermSystem.Nodes

@@ -35,6 +35,7 @@ func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *
 	return r
 }
 
+//SetupPermissions generates permission nodes and adds references in the permission system
 func (r *Router) SetupPermissions() {
 	r.generatePermissionNodes()
 
@@ -42,7 +43,7 @@ func (r *Router) SetupPermissions() {
 }
 
 //RegisterCommands adds a command(s) to the Router
-func (r *Router) RegisterCommands(cmds ...*Command) {
+func (r *Router) RegisterCommands(cmds []*Command) {
 	sort.Slice(cmds, func(i, j int) bool { return cmds[i].Name < cmds[j].Name })
 	for _, c := range cmds {
 		r.Commands = append(r.Commands, c)
@@ -117,7 +118,7 @@ func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *dis
 }
 
 func (r *Router) userHasBypassPermissions(user *discordgo.User) bool {
-	return util.SliceContains(r.Config.Permissions.UserOverride, user.ID)
+	return util.SliceContains(r.Config.Permissions.DebugUsers, user.ID)
 }
 
 //Finds and returns the deepest subcommand for a given command and arg slice

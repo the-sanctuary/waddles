@@ -46,15 +46,7 @@ func (w *Waddles) Run() {
 
 	r := cmd.BuildRouter(w.Database, &permSystem, w.Config)
 
-	r.RegisterCommands(
-		commands.Ping,
-		commands.Purge,
-		commands.Uptime,
-		commands.Nitro,
-		commands.Debug,
-		commands.Commands,
-		commands.Help,
-	)
+	r.RegisterCommands(commands.Commands())
 
 	r.SetupPermissions()
 

@@ -7,8 +7,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 )
 
-//Debug debug command
-var Debug *cmd.Command = &cmd.Command{
+var debug *cmd.Command = &cmd.Command{
 	Name:        "debug",
 	Aliases:     []string{"dbg"},
 	Description: "bot debug interface",

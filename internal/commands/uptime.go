@@ -8,7 +8,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-var Uptime *cmd.Command = &cmd.Command{
+var uptime *cmd.Command = &cmd.Command{
 	Name:        "uptime",
 	Description: "the uptime of the bot",
 	Usage:       "uptime",

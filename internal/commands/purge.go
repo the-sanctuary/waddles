@@ -9,8 +9,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-//Purge command
-var Purge *cmd.Command = &cmd.Command{
+var purge *cmd.Command = &cmd.Command{
 	Name:        "purge",
 	Description: "Remove message history.",
 	Usage:       "purge <num>",

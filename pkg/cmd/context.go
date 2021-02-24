@@ -54,8 +54,11 @@ func (ctx *Context) ReplyHelp() *discordgo.Message {
 //ReplyError returns a generic error to the user
 func (ctx *Context) ReplyError(err error) bool {
 	if err != nil {
-		if util.SliceContains(cfg.ReadConfig().Permissions.DebugUsers, ctx.Message.Author.ID) {
-			ctx.Session.ChannelMessage()
+		authorID := ctx.Message.Author.ID
+		if util.SliceContains(cfg.ReadConfig().Permissions.DebugUsers, authorID) {
+			st, err := ctx.Session.UserChannelCreate(authorID)
+			util.DebugError(err)
+			ctx.Session.ChannelMessageSend(st.ID, fmt.Sprintf("Error Report: ```%s```", err.Error()))
 		}
 		ctx.ReplyString("An error occured. Check the log for details.")
 		util.DebugError(err)

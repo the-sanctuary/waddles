@@ -7,7 +7,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 )
 
-var Help *cmd.Command = &cmd.Command{
+var help *cmd.Command = &cmd.Command{
 	Name:        "help",
 	Aliases:     []string{"h"},
 	Description: "help text",
@@ -17,7 +17,7 @@ var Help *cmd.Command = &cmd.Command{
 	},
 }
 
-var Commands *cmd.Command = &cmd.Command{
+var helpCommands *cmd.Command = &cmd.Command{
 	Name:        "commands",
 	Aliases:     []string{"c"},
 	Description: "list of commands",

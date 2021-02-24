@@ -10,6 +10,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
+//UserActivityTextChannel
 func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -26,6 +27,7 @@ func UserActivityTextChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	db.Instance.Save(&ua)
 }
 
+//UserActivityTextChannel
 func UserActivityVoiceChannel(s *discordgo.Session, vsu *discordgo.VoiceStateUpdate) {
 	if vsu.UserID == s.State.User.ID {
 		return
