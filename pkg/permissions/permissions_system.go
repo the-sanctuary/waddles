@@ -1,7 +1,6 @@
 package permissions
 
 import (
-	"fmt"
 	"io/ioutil"
 	"strings"
 
@@ -90,9 +89,8 @@ func matchNodes(actualNode string, testNode string) bool {
 		return true
 	}
 
-	if strings.Contains(testNode, "*") {
+	if strings.HasSuffix(testNode, "*") {
 		wildcard := strings.TrimSuffix(testNode, ".*")
-		fmt.Println(wildcard)
 		if strings.HasPrefix(actualNode, wildcard) {
 			return true
 		}
