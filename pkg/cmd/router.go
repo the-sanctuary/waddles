@@ -69,8 +69,16 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			return
 		}
 
+		/*
+		 Check to see if the length of the message content is greater than 0
+		 For server messages, such as a Join or Leave message when a user joins or leaves a guild
+		*/
+		if len(message.Content) == 0 {
+			return
+		}
+
 		// Check to see if our prefix is there
-		if message.Content[:len(r.Prefix)] != r.Prefix { //TODO: something wrong here. See: https://github.com/the-sanctuary/waddles/issues/15
+		if message.Content[:len(r.Prefix)] != r.Prefix {
 			return
 		}
 
