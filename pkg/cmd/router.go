@@ -70,7 +70,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		}
 
 		// Check to see if our prefix is there
-		if message.Content[:len(r.Prefix)] != r.Prefix {
+		if message.Content[:len(r.Prefix)] != r.Prefix { //TODO: something wrong here. See: https://github.com/the-sanctuary/waddles/issues/15
 			return
 		}
 
