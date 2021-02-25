@@ -12,7 +12,7 @@ import (
 
 //PermissionSystem manages all permission checking and storage
 type PermissionSystem struct {
-	Nodes []*permissionNode
+	Nodes []*PermissionNode
 	Tree  permissionTree
 }
 
@@ -22,7 +22,7 @@ func BuildPermissionSystem(permissionFile string) PermissionSystem {
 
 	permSystem := PermissionSystem{
 		Tree:  permTree,
-		Nodes: make([]*permissionNode, 0),
+		Nodes: make([]*PermissionNode, 0),
 	}
 
 	return permSystem
@@ -58,9 +58,9 @@ func (pm *PermissionSystem) AddReferences() {
 	}
 }
 
-//AddPermissionNode creates a new permissionNode{} with the given identifier and appends it to the list of Nodes in this PermissionSystem
+//AddPermissionNode creates a new PermissionNode{} with the given identifier and appends it to the list of Nodes in this PermissionSystem
 func (pm *PermissionSystem) AddPermissionNode(nodeIdentifier string) {
-	node := &permissionNode{Identifier: nodeIdentifier}
+	node := &PermissionNode{Identifier: nodeIdentifier}
 	pm.Nodes = append(pm.Nodes, node)
 	log.Debug().Msgf("Added permission node: %s", node.Identifier)
 }
@@ -121,8 +121,8 @@ func (pm *PermissionSystem) getMemberNodes(member *discordgo.Member) []string {
 	return memberNodes
 }
 
-//getNodeFromIdentifier Returns a pointer to the permissions.permissionNode{} the nodeIdentifier represents
-func (pm *PermissionSystem) getNodeFromIdentifier(nodeIdentifier string) *permissionNode {
+//getNodeFromIdentifier Returns a pointer to the permissions.PermissionNode{} the nodeIdentifier represents
+func (pm *PermissionSystem) getNodeFromIdentifier(nodeIdentifier string) *PermissionNode {
 	for _, node := range pm.Nodes {
 		if node.Identifier == nodeIdentifier {
 			return node

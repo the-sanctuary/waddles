@@ -35,6 +35,7 @@ func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *
 	return r
 }
 
+//SetupPermissions generates permission nodes and adds references in the permission system
 func (r *Router) SetupPermissions() {
 	r.generatePermissionNodes()
 
@@ -42,7 +43,7 @@ func (r *Router) SetupPermissions() {
 }
 
 //RegisterCommands adds a command(s) to the Router
-func (r *Router) RegisterCommands(cmds ...*Command) {
+func (r *Router) RegisterCommands(cmds []*Command) {
 	sort.Slice(cmds, func(i, j int) bool { return cmds[i].Name < cmds[j].Name })
 	for _, c := range cmds {
 		r.Commands = append(r.Commands, c)
@@ -69,7 +70,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		}
 
 		// Check to see if our prefix is there
-		if message.Content[:len(r.Prefix)] != r.Prefix {
+		if message.Content[:len(r.Prefix)] != r.Prefix { //TODO: something wrong here. See: https://github.com/the-sanctuary/waddles/issues/15
 			return
 		}
 
@@ -117,7 +118,7 @@ func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *dis
 }
 
 func (r *Router) userHasBypassPermissions(user *discordgo.User) bool {
-	return util.SliceContains(r.Config.Permissions.UserOverride, user.ID)
+	return util.SliceContains(r.Config.Permissions.DebugUsers, user.ID)
 }
 
 //Finds and returns the deepest subcommand for a given command and arg slice
@@ -133,18 +134,6 @@ func findDeepestCommand(prevCmd *Command, args []string, node string) (*Command,
 	return prevCmd, args[1:], node
 }
 
-//returns the command triggered by the provided string, otherwise returns (false, nil)
-func triggerCheck(trigger string, cmds []*Command) (bool, *Command) {
-	for _, cmd := range cmds {
-		triggers := cmd.Triggers()
-
-		if util.SliceContains(triggers, trigger) {
-			return true, cmd
-		}
-	}
-	return false, nil
-}
-
 func buildContext(router *Router, session *discordgo.Session, message *discordgo.MessageCreate, command *Command, args []string) Context {
 	return *&Context{
 		Router:  router,
@@ -157,8 +146,13 @@ func buildContext(router *Router, session *discordgo.Session, message *discordgo
 
 func (r *Router) generatePermissionNodes() {
 	for _, cmd := range r.Commands {
-		cmd.GeneratePermissionNode(r.PermSystem, "")
+		rawNodes := cmd.GeneratePermissionNode("")
+
+		for _, rawNode := range rawNodes {
+			r.PermSystem.AddPermissionNode(rawNode)
+		}
 	}
 }
 
+//TODO properly handle being pinged
 func handlePing(session *discordgo.Session, message *discordgo.MessageCreate) {}

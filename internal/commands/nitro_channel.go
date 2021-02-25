@@ -10,12 +10,12 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-var NitroChannel *cmd.Command = &cmd.Command{
+var nitroChannel *cmd.Command = &cmd.Command{
 	Name:        "channel",
 	Aliases:     *&[]string{"c"},
 	Description: "control your voice channel",
 	Usage:       "channel (register|release)",
-	SubCommands: []*cmd.Command{NitroChannelRegister, NitroChannelRelease},
+	SubCommands: []*cmd.Command{nitroChannelRegister, nitroChannelRelease},
 	Handler: func(c *cmd.Context) {
 		//Check to see if a user already has a channel registered
 		var chann db.NitroUserChannel
@@ -29,7 +29,7 @@ var NitroChannel *cmd.Command = &cmd.Command{
 	},
 }
 
-var NitroChannelRelease *cmd.Command = &cmd.Command{
+var nitroChannelRelease *cmd.Command = &cmd.Command{
 	Name:        "release",
 	Aliases:     *&[]string{"rl"},
 	Description: "release your voice channel",
@@ -51,7 +51,7 @@ var NitroChannelRelease *cmd.Command = &cmd.Command{
 	},
 }
 
-var NitroChannelRegister *cmd.Command = &cmd.Command{
+var nitroChannelRegister *cmd.Command = &cmd.Command{
 	Name:        "register",
 	Aliases:     *&[]string{"r"},
 	Description: "register your voice channel",
@@ -76,7 +76,7 @@ var NitroChannelRegister *cmd.Command = &cmd.Command{
 
 			permOverwrite := discordgo.PermissionOverwrite{
 				ID:    c.Message.Author.ID,
-				Type:  "1",
+				Type:  discordgo.PermissionOverwriteTypeMember,
 				Allow: discordgo.PermissionManageChannels,
 			}
 

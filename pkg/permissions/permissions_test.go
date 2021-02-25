@@ -20,7 +20,7 @@ func BasePermissionSystem() PermissionSystem {
 
 	permSystem := PermissionSystem{
 		Tree:  permissionTree{},
-		Nodes: make([]*permissionNode, 0),
+		Nodes: make([]*PermissionNode, 0),
 	}
 
 	// router.generatePermissionNodes()
@@ -75,45 +75,6 @@ func Test_matchNodes(t *testing.T) {
 	assert.False(t, matchNodes("test.sub", "test.sub.perm1"))
 
 	assert.False(t, matchNodes("test.*.test.*", "test.sub.test.sub"))
-}
-
-func Test_generateNodesFromCommand(t *testing.T) {
-	t.Skip()
-	// testCmdSub1 := &cmd.Command{
-	// 	Name:    "sub1",
-	// 	Handler: func(c *cmd.Context) {},
-	// }
-
-	// testCmdSub21 := &cmd.Command{
-	// 	Name:    "sub21",
-	// 	Handler: func(c *cmd.Context) {},
-	// }
-
-	// testCmdSub2 := &cmd.Command{
-	// 	Name:        "sub2",
-	// 	Handler:     func(c *cmd.Context) {},
-	// 	SubCommands: []*cmd.Command{testCmdSub21},
-	// }
-
-	// testCmd := &cmd.Command{
-	// 	Name:        "testcmd",
-	// 	Handler:     func(c *cmd.Context) {},
-	// 	SubCommands: []*cmd.Command{testCmdSub1, testCmdSub2},
-	// }
-
-	// assert.NotNil(t, testCmd)
-
-	// system := &PermissionSystem{}
-	// // system.generateNodesFromCommand(testCmd, "")
-
-	// generatedNodes := system.Nodes
-
-	// assert.Equal(t, 4, len(generatedNodes))
-
-	// assert.Equal(t, "testcmd", generatedNodes[0].Identifier)
-	// assert.Equal(t, "testcmd.sub1", generatedNodes[1].Identifier)
-	// assert.Equal(t, "testcmd.sub2", generatedNodes[2].Identifier)
-	// assert.Equal(t, "testcmd.sub2.sub21", generatedNodes[3].Identifier)
 }
 
 func Test_ParseSet(t *testing.T) {
@@ -211,7 +172,7 @@ func Test_ParseGroup(t *testing.T) {
 }
 
 func Test_ParsePermissionConfig(t *testing.T) {
-	t.Skip()
+	t.Skip() //TODO: Fix this test
 	actual, err := parsePermissionConfig([]byte(tomlBytesAll))
 
 	assert.NoError(t, err, "Error occured during unmarshal.")

@@ -8,8 +8,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-//Ping command
-var Ping *cmd.Command = &cmd.Command{
+var ping *cmd.Command = &cmd.Command{
 	Name:        "ping",
 	Aliases:     *&[]string{"pong"},
 	Description: "This pongs your ping(pong)!",
@@ -17,10 +16,10 @@ var Ping *cmd.Command = &cmd.Command{
 	Handler: func(c *cmd.Context) {
 		c.ReplyString("Pong!")
 	},
-	SubCommands: []*cmd.Command{PingCount},
+	SubCommands: []*cmd.Command{pingCount},
 }
 
-var PingCount *cmd.Command = &cmd.Command{
+var pingCount *cmd.Command = &cmd.Command{
 	Name:        "count",
 	Description: "how many times to reply with pong",
 	Usage:       "count <num>",

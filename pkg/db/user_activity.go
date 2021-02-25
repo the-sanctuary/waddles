@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//UserActivity stores any per-user statistics
 type UserActivity struct {
 	gorm.Model
 	CommandCount int

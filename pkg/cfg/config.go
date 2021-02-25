@@ -29,7 +29,7 @@ type Config struct {
 	} `toml:"nitro" comment:"perks related to being a server booster"`
 
 	Permissions struct {
-		UserOverride []string `toml:"bypass-users" comment:"list of user IDs who bypass the permission's system (useful for testing)"`
+		DebugUsers []string `toml:"bypass-users" comment:"list of user IDs who bypass the permission's system (useful for testing)"` //TODO: reorganize debugusers to different struct
 	} `toml:"permissions" comment:"settings related to the permissions system"`
 }
 
