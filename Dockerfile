@@ -1,5 +1,5 @@
 # compile waddles inside a container
-FROM golang:1.15-alpine AS builder
+FROM golang:1.16-alpine AS builder
 
 WORKDIR /build
 
