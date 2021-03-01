@@ -58,14 +58,19 @@ func UserActivityVoiceChannel(s *discordgo.Session, vsu *discordgo.VoiceStateUpd
 func NicknameUpdateListener(s *discordgo.Session, gmu *discordgo.GuildMemberUpdate) {
 	var nnu db.NicknameUpdate
 
-	tx := db.Instance.Order("created_at DESC").Where("discord_id = ?, gmu.User.ID").First(&nnu)
+	tx := db.Instance.Order("created_at DESC").Where("discord_id = ?", gmu.User.ID).First(&nnu)
 
 	if util.DebugError(tx.Error) && tx.Error == gorm.ErrRecordNotFound {
 		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, User: db.User{DiscordID: gmu.User.ID}})
 		log.Trace().Msgf("Started tracking nickname updates for %s (%s#%s)", gmu.User.ID, gmu.User.Username, gmu.User.Discriminator)
 		util.DebugError(tx.Error)
+		return
+	}
+
+	if gmu.Nick != nnu.Nickname {
+		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, User: db.User{DiscordID: gmu.User.ID}})
+		log.Trace().Msgf("Saved nickname update for <@%s>", gmu.User.ID)
 	}
 
 	log.Trace().Msgf("Filed nickname update for %s (%s -> %s)")
-
 }
