@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 )
 
@@ -46,4 +47,16 @@ func FileExists(filename string) bool {
 		return false
 	}
 	return !s.IsDir()
+}
+
+// ComesFromDM returns true if a message comes from a DM channel
+func ComesFromDM(s *discordgo.Session, m *discordgo.MessageCreate) (bool, error) {
+	channel, err := s.State.Channel(m.ChannelID)
+	if err != nil {
+		if channel, err = s.Channel(m.ChannelID); err != nil {
+			return false, err
+		}
+	}
+
+	return channel.Type == discordgo.ChannelTypeDM, nil
 }
