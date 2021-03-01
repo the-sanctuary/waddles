@@ -39,6 +39,7 @@ func (w *Waddles) Run() {
 
 	w.Session.Identify = discordgo.Identify{ //TODO: extract Identify options out into config file section
 		LargeThreshold: 250,
+		Intents:        discordgo.MakeIntent(discordgo.IntentsAll),
 	}
 
 	// Open connection to database

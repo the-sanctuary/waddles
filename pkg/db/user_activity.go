@@ -23,6 +23,6 @@ type NicknameUpdate struct {
 	CreatedAt time.Time `gorm:"index"` //we want to easyily keep track of the last one
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-	User
-	Nickname string
+	DiscordID string         `gorm:"index"`
+	Nickname  string
 }

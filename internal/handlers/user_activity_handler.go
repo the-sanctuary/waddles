@@ -60,17 +60,25 @@ func NicknameUpdateListener(s *discordgo.Session, gmu *discordgo.GuildMemberUpda
 
 	tx := db.Instance.Order("created_at DESC").Where("discord_id = ?", gmu.User.ID).First(&nnu)
 
-	if util.DebugError(tx.Error) && tx.Error == gorm.ErrRecordNotFound {
-		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, User: db.User{DiscordID: gmu.User.ID}})
+	if util.DebugError(tx.Error) && tx.Error == gorm.ErrRecordNotFound { //We don't have a history of this member yet, so let's make one and return
+		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, DiscordID: gmu.User.ID})
 		log.Trace().Msgf("Started tracking nickname updates for %s (%s#%s)", gmu.User.ID, gmu.User.Username, gmu.User.Discriminator)
 		util.DebugError(tx.Error)
 		return
 	}
 
-	if gmu.Nick != nnu.Nickname {
-		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, User: db.User{DiscordID: gmu.User.ID}})
-		log.Trace().Msgf("Saved nickname update for <@%s>", gmu.User.ID)
+	lastNickname := nnu.Nickname
+	newNickname := gmu.Nick
+
+	if newNickname == lastNickname { //No need to track an nonexistant update
+		return
 	}
 
-	log.Trace().Msgf("Filed nickname update for %s (%s -> %s)")
+	nnu = db.NicknameUpdate{Nickname: gmu.Nick, DiscordID: gmu.User.ID}
+	tx = db.Instance.Create(&nnu)
+	util.DebugError(tx.Error)
+
+	log.Trace().Msgf("Saved nickname update for <@%s> (%s -> %s)", gmu.User.ID, lastNickname, newNickname)
+
+	db.Instance.Save(&nnu)
 }
