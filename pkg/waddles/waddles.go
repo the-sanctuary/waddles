@@ -37,6 +37,10 @@ func (w *Waddles) Run() {
 		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
 	}
 
+	// Setup intents (needed for certain priveleged intents, such as listening for some GuildMember events)
+	w.Session.Identify.LargeThreshold = 250
+	w.Session.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAll)
+
 	// Open connection to database
 	wdb := db.BuildWadlDB(w.Config)
 	w.Database = &wdb
@@ -58,6 +62,7 @@ func (w *Waddles) Run() {
 
 	w.Session.AddHandler(handlers.UserActivityTextChannel)
 	w.Session.AddHandler(handlers.UserActivityVoiceChannel)
+	w.Session.AddHandler(handlers.GatekeeperHandler)
 
 	// Open a websocket connection to Discord and start listening
 	err = w.Session.Open()
