@@ -37,10 +37,9 @@ func (w *Waddles) Run() {
 		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
 	}
 
-	w.Session.Identify = discordgo.Identify{ //TODO: extract Identify options out into config file section
-		LargeThreshold: 250,
-		Intents:        discordgo.MakeIntent(discordgo.IntentsAll),
-	}
+	//TODO: extract Identify options out into config file section
+	w.Session.Identify.LargeThreshold = 250
+	w.Session.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAll)
 
 	// Open connection to database
 	wdb := db.BuildWadlDB(w.Config)

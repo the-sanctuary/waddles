@@ -27,7 +27,7 @@ type permissionTree struct {
 	Groups []permissionGroup
 }
 
-//PermissionNode 
+//PermissionNode
 type PermissionNode struct {
 	Identifier string
 }
