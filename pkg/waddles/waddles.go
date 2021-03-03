@@ -62,7 +62,7 @@ func (w *Waddles) Run() {
 
 	w.Session.AddHandler(handlers.UserActivityTextChannel)
 	w.Session.AddHandler(handlers.UserActivityVoiceChannel)
-	w.Session.AddHandler(handlers.GatekeeperHandler)
+	w.Session.AddHandler(handlers.GatekeeperJoinHandler)
 
 	// Open a websocket connection to Discord and start listening
 	err = w.Session.Open()

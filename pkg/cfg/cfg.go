@@ -13,10 +13,7 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-var (
-	//cfg holds the current config information in a Config struct
-	cfg Config
-)
+var cfg Config
 
 //ReadConfig parses the config file into a Config struct
 func ReadConfig() *Config {
