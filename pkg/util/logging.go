@@ -32,13 +32,13 @@ func SetupLogging() {
 		errlog.DefaultLogger.Disable(true)
 	}
 	errorLogger = errlog.NewLogger(&errlog.Config{
-		PrintFunc:          log.Error().Msgf,
+		PrintFunc:          log.Error().Msgf, //TODO: create wrapper function to cleanly print debug errors in log.
 		LinesBefore:        4,
 		LinesAfter:         4,
 		PrintError:         true,
 		PrintSource:        true,
 		PrintStack:         true,
-		ExitOnDebugSuccess: true,
+		ExitOnDebugSuccess: false,
 	})
 }
 
