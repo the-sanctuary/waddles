@@ -43,7 +43,7 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 
 		// Delete any messages in the gatekeeper channel specified by the config file
 		// The rate limit (20) here is arbitrary, but it should be at least 1
-		messages, err := c.Session.ChannelMessages(config.Gatekeeper.Channel, 20, "", "", "")
+		messages, err := c.Session.ChannelMessages(config.Gatekeeper.ChannelID, 20, "", "", "")
 		if util.DebugError(err) {
 			c.ReplyString("An error occured. Check the log for details.")
 		}
@@ -54,9 +54,9 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 		}
 
 		if len(msgIds) == 1 {
-			c.Session.ChannelMessageDelete(config.Gatekeeper.Channel, msgIds[0])
+			c.Session.ChannelMessageDelete(config.Gatekeeper.ChannelID, msgIds[0])
 		} else {
-			c.Session.ChannelMessagesBulkDelete(config.Gatekeeper.Channel, msgIds)
+			c.Session.ChannelMessagesBulkDelete(config.Gatekeeper.ChannelID, msgIds)
 		}
 
 		// Build the message from the gatekeeper config info
@@ -66,6 +66,6 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 			"Please type `accept`, to accept the rules above, or `decline`, to leave the server.")
 
 		// Send the message to the channel specified in the gatekeeper config
-		c.Session.ChannelMessageSend(config.Gatekeeper.Channel, msg)
+		c.Session.ChannelMessageSend(config.Gatekeeper.ChannelID, msg)
 	},
 }

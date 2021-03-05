@@ -78,7 +78,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		}
 
 		// Only do this if someone typed in the gatekeeper channel
-		if message.ChannelID == r.Config.Gatekeeper.Channel {
+		if message.ChannelID == r.Config.Gatekeeper.ChannelID {
 			log.Trace().Msgf("Do we get here? [0]")
 
 			// Always delete messages from users in the channel before exiting the function
@@ -86,12 +86,13 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 
 			if message.Content == "accept" {
 				log.Trace().Msgf("User %s#%s accepted the rules.", message.Author.Username, message.Author.Discriminator)
-				// TODO: Remove the Newbie role
+				session.GuildMemberRoleRemove(r.Config.Wadl.GuildID, message.Author.ID, r.Config.Gatekeeper.RoleID)
 			} else {
 				log.Trace().Msgf("User %s#%s declined the rules.", message.Author.Username, message.Author.Discriminator)
-				// TODO: Kick the user from the server
-				return
+				session.GuildMemberDelete(r.Config.Wadl.GuildID, message.Author.ID)
 			}
+
+			return
 		}
 
 		// Check to see if our prefix is there

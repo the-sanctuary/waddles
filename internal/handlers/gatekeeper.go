@@ -9,10 +9,9 @@ import (
 // GatekeeperJoinHandler tracks when a user joins the guild via the GuildMemberAdd event
 func GatekeeperJoinHandler(s *discordgo.Session, gma *discordgo.GuildMemberAdd) {
 	log.Trace().Msgf("GuildMemberAddEvent - user: %s#%s", gma.Member.User.Username, gma.Member.User.Discriminator)
-	// TODO: Add the Newbie role to the newly joined user
 	config := cfg.ReadConfig()
-	if config.Gatekeeper.Role != "" {
-		s.GuildMemberRoleAdd(gma.GuildID, gma.User.ID, config.Gatekeeper.Role)
+	if config.Gatekeeper.RoleID != "" {
+		s.GuildMemberRoleAdd(gma.GuildID, gma.User.ID, config.Gatekeeper.RoleID)
 	}
 }
 

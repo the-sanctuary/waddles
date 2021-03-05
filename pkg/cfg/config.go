@@ -30,8 +30,8 @@ type Config struct {
 
 	Gatekeeper struct {
 		Enabled    bool   `toml:"enabled"`
-		Channel    string `toml:"channel"`
-		Role       string `toml:"role"`
+		ChannelID  string `toml:"channel-id"`
+		RoleID     string `toml:"role-id"`
 		WelcomeMsg string `toml:"welcome-msg"`
 		Rules      string `toml:"rules"`
 	} `toml:"gatekeeper" comment:"settings related to the gatekeeper function"`
