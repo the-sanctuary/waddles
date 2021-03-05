@@ -79,8 +79,6 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 
 		// Only do this if someone typed in the gatekeeper channel
 		if message.ChannelID == r.Config.Gatekeeper.ChannelID {
-			log.Trace().Msgf("Do we get here? [0]")
-
 			// Always delete messages from users in the channel before exiting the function
 			defer session.ChannelMessageDelete(message.ChannelID, message.ID)
 
