@@ -111,7 +111,6 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 }
 
 func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
-	fmt.Printf("----------------------------%s", r.Config.Wadl.GuildID)
 	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
 	if util.DebugError(err) {
 		log.Error().Err(err).Msg("An error has occurred.")
