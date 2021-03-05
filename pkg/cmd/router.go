@@ -77,6 +77,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			return
 		}
 
+		// TODO: Move gatekeeper logic to it's own handler (when we figure out why its not working on Rory's computer lmao)
 		// Only do this if someone typed in the gatekeeper channel
 		if message.ChannelID == r.Config.Gatekeeper.ChannelID {
 			// Always delete messages from users in the channel before exiting the function
