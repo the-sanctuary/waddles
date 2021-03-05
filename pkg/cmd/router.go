@@ -77,23 +77,6 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			return
 		}
 
-		// TODO: Move gatekeeper logic to it's own handler (when we figure out why its not working on Rory's computer lmao)
-		// Only do this if someone typed in the gatekeeper channel
-		if message.ChannelID == r.Config.Gatekeeper.ChannelID {
-			// Always delete messages from users in the channel before exiting the function
-			defer session.ChannelMessageDelete(message.ChannelID, message.ID)
-
-			if message.Content == "accept" {
-				log.Trace().Msgf("User %s#%s accepted the rules.", message.Author.Username, message.Author.Discriminator)
-				session.GuildMemberRoleRemove(r.Config.Wadl.GuildID, message.Author.ID, r.Config.Gatekeeper.RoleID)
-			} else {
-				log.Trace().Msgf("User %s#%s declined the rules.", message.Author.Username, message.Author.Discriminator)
-				session.GuildMemberDelete(r.Config.Wadl.GuildID, message.Author.ID)
-			}
-
-			return
-		}
-
 		// Check to see if our prefix is there
 		if message.Content[:len(r.Prefix)] != r.Prefix {
 			return
@@ -128,6 +111,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 }
 
 func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
+	fmt.Printf("----------------------------%s", r.Config.Wadl.GuildID)
 	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
 	if util.DebugError(err) {
 		log.Error().Err(err).Msg("An error has occurred.")

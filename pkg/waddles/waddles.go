@@ -16,8 +16,6 @@ import (
 
 //Waddles .
 type Waddles struct {
-	//Global Config
-	Config   *cfg.Config
 	Router   *cmd.Router
 	Database *db.WadlDB
 	Session  *discordgo.Session
@@ -26,13 +24,13 @@ type Waddles struct {
 //Run reads the Config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
 func (w *Waddles) Run() {
 	util.InitializeLogging()
-	w.Config = cfg.ReadConfig()
+	cfg.Cfg()
 	util.SetupLogging()
 
 	var err error
 
 	// Create a Discord session using our bot token (client secret)
-	w.Session, err = discordgo.New("Bot " + w.Config.Wadl.Token)
+	w.Session, err = discordgo.New("Bot " + cfg.Cfg().Wadl.Token)
 	if util.DebugError(err) {
 		log.Fatal().Err(err).Msg("Unable to create a Discord session.  Quitting....")
 	}
@@ -41,13 +39,13 @@ func (w *Waddles) Run() {
 	w.Session.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAll)
 
 	// Open connection to database
-	wdb := db.BuildWadlDB(w.Config)
+	wdb := db.BuildWadlDB(cfg.Cfg())
 	w.Database = &wdb
 	w.Database.Migrate()
 
-	permSystem := permissions.BuildPermissionSystem(w.Config.GetConfigFileLocation("permissions.toml"))
+	permSystem := permissions.BuildPermissionSystem(cfg.Cfg().GetConfigFileLocation("permissions.toml"))
 
-	r := cmd.BuildRouter(w.Database, &permSystem, w.Config)
+	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg())
 
 	r.RegisterCommands(commands.Commands())
 
@@ -62,6 +60,7 @@ func (w *Waddles) Run() {
 	w.Session.AddHandler(handlers.UserActivityTextChannel)
 	w.Session.AddHandler(handlers.UserActivityVoiceChannel)
 	w.Session.AddHandler(handlers.GatekeeperJoinHandler)
+	w.Session.AddHandler(handlers.GatekeeperMsgHandler)
 	w.Session.AddHandler(handlers.NicknameUpdateListener)
 
 	// Open a websocket connection to Discord and start listening
