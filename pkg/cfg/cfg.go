@@ -15,11 +15,17 @@ import (
 
 var cfg *Config
 
+//Cfg returns the active cfg.Config holding the config information
 func Cfg() *Config {
 	if cfg == nil {
 		cfg = ReadConfig()
 	}
 	return cfg
+}
+
+//ReloadCfgFromDisk reloads and reparses the config file from disk
+func ReloadCfgFromDisk() {
+	cfg = ReadConfig()
 }
 
 //ReadConfig parses the config file into a Config struct

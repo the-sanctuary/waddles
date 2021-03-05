@@ -95,7 +95,13 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 				return
 			}
 
-			deepestCmd.Handler(&ctx)
+			handler := deepestCmd.Handler
+
+			if handler == nil {
+				handler = defaultHandler
+			}
+
+			handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
 			var ua db.UserActivity
@@ -106,6 +112,31 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 			ua.CommandCount++
 			ua.DiscordID = message.Author.ID
 			db.Instance.Save(&ua)
+		}
+	}
+}
+
+func defaultHandler(ctx *Context) {
+	builder := strings.Builder{}
+
+	builder.WriteString("```\n")
+	RBuildHelp(ctx, &builder, ctx.Command.SubCommands, 0)
+	builder.WriteString("```")
+
+	ctx.ReplyString(builder.String())
+}
+
+func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int) {
+	for _, cmd := range cmds {
+		if cmd.HideInHelp {
+			continue
+		}
+		indent := strings.Repeat("  ", depth)
+		helpText := cmd.SPrintHelp()
+
+		fmt.Fprintf(builder, "%s ♦ %s\n", indent, helpText)
+		if cmd.HasSubcommands() {
+			RBuildHelp(c, builder, cmd.SubCommands, depth+1)
 		}
 	}
 }

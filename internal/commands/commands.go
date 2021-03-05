@@ -12,6 +12,5 @@ func Commands() []*cmd.Command {
 		debug,
 		helpCommands,
 		help,
-		update,
 	}
 }

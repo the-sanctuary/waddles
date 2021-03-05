@@ -3,7 +3,9 @@ package commands
 import (
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 	"github.com/the-sanctuary/waddles/pkg/util"
@@ -14,10 +16,19 @@ var update *cmd.Command = &cmd.Command{
 	Aliases:     []string{"u"},
 	Description: "Force the bot to perform various update functions",
 	Usage:       "update [subsystem]",
+	SubCommands: []*cmd.Command{updateGatekeeper, updateConfig},
+}
+
+var updateConfig *cmd.Command = &cmd.Command{
+	Name:        "config",
+	Aliases:     []string{"cfg"},
+	Description: "Reload the config file from disk.",
+	Usage:       "config",
 	Handler: func(c *cmd.Context) {
-		c.ReplyStringf("Please use `%scommands` to view a list of commands.", c.Router.Config.Wadl.Prefix)
+		log.Info().Msgf("User %s force reloaded the config from disk.", c.Message.Author.ID)
+		cfg.ReloadCfgFromDisk()
+		c.ReplyTimeDeleteStringf(3*time.Second, "Config reloaded.")
 	},
-	SubCommands: []*cmd.Command{updateGatekeeper},
 }
 
 var updateGatekeeper *cmd.Command = &cmd.Command{

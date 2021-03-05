@@ -13,10 +13,7 @@ var debug *cmd.Command = &cmd.Command{
 	Description: "bot debug interface",
 	Usage:       "",
 	HideInHelp:  true,
-	SubCommands: []*cmd.Command{debugDumpPerms, debugListPerms},
-	Handler: func(c *cmd.Context) {
-		c.ReplyHelp()
-	},
+	SubCommands: []*cmd.Command{debugDumpPerms, debugListPerms, update},
 }
 
 var debugListPerms *cmd.Command = &cmd.Command{
