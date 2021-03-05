@@ -34,13 +34,12 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 		 */
 		config := cfg.ReadConfig()
 
-		fmt.Printf("%q\n", config.Gatekeeper.Rules)
+		// Write the gatekeeper portion of the config into the config passed from the router
+		c.Router.Config.Gatekeeper = config.Gatekeeper
 
 		// Trim any whitespace at the end, as well as any trailing newlines and/or carriage returns
 		config.Gatekeeper.Rules = strings.TrimRight(config.Gatekeeper.Rules, " ")
 		config.Gatekeeper.Rules = strings.TrimSuffix(config.Gatekeeper.Rules, "\n")
-
-		fmt.Printf("%q\n", config.Gatekeeper.Rules)
 
 		// Delete any messages in the gatekeeper channel specified by the config file
 		// The rate limit (20) here is arbitrary, but it should be at least 1
@@ -62,9 +61,9 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 
 		// Build the message from the gatekeeper config info
 		msg := fmt.Sprintf("%s\n```\n%s```\n", config.Gatekeeper.WelcomeMsg, config.Gatekeeper.Rules)
-		msg += fmt.Sprintf("By typing accept, you agree to the rules listed here, and will abibe by them at all times while in the server.  " +
+		msg += fmt.Sprintf("By typing accept, you agree to the rules listed here, and will abide by them at all times while in the server.  " +
 			"You may decline to accept these rules, but you will be not be granted access to the server, and will instead be kicked.\n\n" +
-			"Please type `accept` to accept the rules above, or `decline`, to leave the server.")
+			"Please type `accept`, to accept the rules above, or `decline`, to leave the server.")
 
 		// Send the message to the channel specified in the gatekeeper config
 		c.Session.ChannelMessageSend(config.Gatekeeper.Channel, msg)
