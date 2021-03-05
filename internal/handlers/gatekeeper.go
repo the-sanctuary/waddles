@@ -38,7 +38,6 @@ func GatekeeperMsgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		} else if strings.ToLower(m.Content) == "decline" {
 			log.Trace().Msgf("User %s#%s declined the rules.", m.Author.Username, m.Author.Discriminator)
 			s.GuildMemberDelete(cfg.Cfg().Wadl.GuildID, m.Author.ID)
-			return
 		} else {
 			errMsg, err := s.ChannelMessageSend(m.ChannelID, "Please enter accept/decline.")
 
