@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/util"
@@ -51,4 +52,33 @@ func UserActivityVoiceChannel(s *discordgo.Session, vsu *discordgo.VoiceStateUpd
 	}
 
 	db.Instance.Save(&ua)
+}
+
+//NicknameUpdateListener logs every member's nickname  changes in the database.
+func NicknameUpdateListener(s *discordgo.Session, gmu *discordgo.GuildMemberUpdate) {
+	var nnu db.NicknameUpdate
+
+	tx := db.Instance.Order("created_at DESC").Where("discord_id = ?", gmu.User.ID).First(&nnu)
+
+	if util.DebugError(tx.Error) && tx.Error == gorm.ErrRecordNotFound { //We don't have a history of this member yet, so let's make one and return
+		tx = db.Instance.Create(&db.NicknameUpdate{Nickname: gmu.Nick, DiscordID: gmu.User.ID})
+		log.Trace().Msgf("Started tracking nickname updates for %s (%s#%s)", gmu.User.ID, gmu.User.Username, gmu.User.Discriminator)
+		util.DebugError(tx.Error)
+		return
+	}
+
+	lastNickname := nnu.Nickname
+	newNickname := gmu.Nick
+
+	if newNickname == lastNickname { //No need to track an nonexistant update
+		return
+	}
+
+	nnu = db.NicknameUpdate{Nickname: gmu.Nick, DiscordID: gmu.User.ID}
+	tx = db.Instance.Create(&nnu)
+	util.DebugError(tx.Error)
+
+	log.Trace().Msgf("Saved nickname update for <@%s> (%s -> %s)", gmu.User.ID, lastNickname, newNickname)
+
+	db.Instance.Save(&nnu)
 }

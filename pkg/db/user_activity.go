@@ -16,3 +16,13 @@ type UserActivity struct {
 	LastChannelVoiceAppearence *time.Time
 	LastChannelTextAppearence  *time.Time
 }
+
+//NicknameUpdate stores ever nickname change in the server
+type NicknameUpdate struct {
+	ID        uint      `gorm:"primarykey"`
+	CreatedAt time.Time `gorm:"index"` //we want to easyily keep track of the last one
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	DiscordID string         `gorm:"index"`
+	Nickname  string
+}

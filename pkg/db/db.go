@@ -53,4 +53,5 @@ func BuildWadlDB(config *cfg.Config) WadlDB {
 func (wdb *WadlDB) Migrate() {
 	wdb.AutoMigrate(&UserActivity{})
 	wdb.AutoMigrate(&NitroUserChannel{})
+	wdb.AutoMigrate(&NicknameUpdate{})
 }
