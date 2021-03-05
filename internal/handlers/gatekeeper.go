@@ -34,10 +34,10 @@ func GatekeeperMsgHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if strings.ToLower(m.Content) == "accept" {
 			log.Trace().Msgf("User %s#%s accepted the rules.", m.Author.Username, m.Author.Discriminator)
-			// TODO: Remove the Newbie role
+			s.GuildMemberRoleRemove(cfg.Cfg().Wadl.GuildID, m.Author.ID, cfg.Cfg().Gatekeeper.RoleID)
 		} else if strings.ToLower(m.Content) == "decline" {
 			log.Trace().Msgf("User %s#%s declined the rules.", m.Author.Username, m.Author.Discriminator)
-			// TODO: Kick the user from the server
+			s.GuildMemberDelete(cfg.Cfg().Wadl.GuildID, m.Author.ID)
 			return
 		} else {
 			errMsg, err := s.ChannelMessageSend(m.ChannelID, "Please enter accept/decline.")
