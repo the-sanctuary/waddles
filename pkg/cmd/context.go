@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
@@ -65,4 +66,12 @@ func (ctx *Context) ReplyError(err error) bool {
 		return true
 	}
 	return false
+}
+
+func (ctx *Context) ReplyTimeDeleteStringf(delay time.Duration, format string, a ...interface{}) {
+	errMsg := ctx.ReplyStringf(format, a...)
+
+	time.Sleep(delay)
+
+	ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, errMsg.ID)
 }

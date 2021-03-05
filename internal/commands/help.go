@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/the-sanctuary/waddles/pkg/cmd"
@@ -29,24 +28,9 @@ var helpCommands *cmd.Command = &cmd.Command{
 
 		builder.WriteString("```\n")
 
-		rBuildHelp(c, &builder, cmds, 0)
+		cmd.RBuildHelp(c, &builder, cmds, 0)
 
 		builder.WriteString("```")
 		c.ReplyString(builder.String())
 	},
-}
-
-func rBuildHelp(c *cmd.Context, builder *strings.Builder, cmds []*cmd.Command, depth int) {
-	for _, cmd := range cmds {
-		if cmd.HideInHelp {
-			continue
-		}
-		indent := strings.Repeat("  ", depth)
-		helpText := cmd.SPrintHelp()
-
-		fmt.Fprintf(builder, "%s ♦ %s\n", indent, helpText)
-		if cmd.HasSubcommands() {
-			rBuildHelp(c, builder, cmd.SubCommands, depth+1)
-		}
-	}
 }

@@ -13,10 +13,20 @@ import (
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
 
-var (
-	//cfg holds the current config information in a Config struct
-	cfg Config
-)
+var cfg *Config
+
+//Cfg returns the active cfg.Config holding the config information
+func Cfg() *Config {
+	if cfg == nil {
+		cfg = ReadConfig()
+	}
+	return cfg
+}
+
+//ReloadCfgFromDisk reloads and reparses the config file from disk
+func ReloadCfgFromDisk() {
+	cfg = ReadConfig()
+}
 
 //ReadConfig parses the config file into a Config struct
 func ReadConfig() *Config {
@@ -32,15 +42,15 @@ func ReadConfig() *Config {
 		configDir = path.Clean(configDir) + "/"
 	}
 
-	cfg = Config{configDir: configDir}
+	config := &Config{configDir: configDir}
 
-	configFile := cfg.GetConfigFileLocation("waddles.toml")
+	configFile := config.GetConfigFileLocation("waddles.toml")
 
 	if !util.FileExists(configFile) {
-		cfg.configDir = ""
+		config.configDir = ""
 
 		var bytes bytes.Buffer
-		err := toml.NewEncoder(&bytes).Order(toml.OrderPreserve).Encode(cfg)
+		err := toml.NewEncoder(&bytes).Order(toml.OrderPreserve).Encode(config)
 
 		if err != nil {
 			log.Panic().Err(err).Msg("Unable to save sample config file.")
@@ -58,18 +68,18 @@ func ReadConfig() *Config {
 	}
 
 	// Unmarshal the config file bytes into a Config struct
-	err = toml.Unmarshal(bytes, &cfg)
+	err = toml.Unmarshal(bytes, config)
 
 	if err != nil {
 		log.Fatal().Err(err).Msg("Unable to parse config file.")
 	}
 
 	log.Debug().Msgf("Read config file: %s", configFile)
-	log.Trace().Msgf("Config Struct: %+v", cfg)
+	log.Trace().Msgf("Config Struct: %+v", *config)
 
-	logLevel, err := zerolog.ParseLevel(cfg.Wadl.LogLevel)
+	logLevel, err := zerolog.ParseLevel(config.Wadl.LogLevel)
 	if err != nil {
-		log.Warn().Msgf("Supplied config file log level (%s) is invalid. Defaulting to info.", cfg.Wadl.LogLevel)
+		log.Warn().Msgf("Supplied config file log level (%s) is invalid. Defaulting to info.", config.Wadl.LogLevel)
 		logLevel = zerolog.InfoLevel
 	}
 
@@ -78,5 +88,5 @@ func ReadConfig() *Config {
 	// Set global log level
 	zerolog.SetGlobalLevel(logLevel)
 
-	return &cfg
+	return config
 }

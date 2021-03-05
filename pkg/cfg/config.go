@@ -28,6 +28,14 @@ type Config struct {
 		} `toml:"booster-channel" comment:"server booster personal channel options"`
 	} `toml:"nitro" comment:"perks related to being a server booster"`
 
+	Gatekeeper struct {
+		Enabled    bool   `toml:"enabled"`
+		ChannelID  string `toml:"channel-id"`
+		RoleID     string `toml:"role-id"`
+		WelcomeMsg string `toml:"welcome-msg"`
+		Rules      string `toml:"rules"`
+	} `toml:"gatekeeper" comment:"settings related to the gatekeeper function"`
+
 	Permissions struct {
 		DebugUsers []string `toml:"bypass-users" comment:"list of user IDs who bypass the permission's system (useful for testing)"` //TODO: reorganize debugusers to different struct
 	} `toml:"permissions" comment:"settings related to the permissions system"`
