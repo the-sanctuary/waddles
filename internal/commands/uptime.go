@@ -13,7 +13,6 @@ var uptime *cmd.Command = &cmd.Command{
 	Description: "the uptime of the bot",
 	Usage:       "uptime",
 	Handler: func(c *cmd.Context) {
-		c.ReplyStringf("Current Bot Time: `%s`", time.Now().Format(time.RFC1123Z))
-		c.ReplyStringf("Uptime: `%s`", util.Uptime().Round(time.Second))
+		c.ReplyStringf("Current Bot Time: `%s`\nUptime: `%s`", time.Now().Format(time.RFC1123Z), util.Uptime().Round(time.Second))
 	},
 }

@@ -52,7 +52,7 @@ func (r *Router) RegisterCommands(cmds []*Command) {
 
 //Handler returns the func that deals with command delegates execution to command
 func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
-	return func(session *discordgo.Session, message *discordgo.MessageCreate) {
+	return func(session *discordgo.Session, message *discordgo.MessageCreate) { // TODO: This doesn't need to return a function, we can add it as a handler directly
 		log.Trace().Msg("Entering Router Handler")
 		defer log.Trace().Msg("Exiting Router Handler")
 
@@ -129,7 +129,9 @@ func defaultHandler(ctx *Context) {
 func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int) {
 	for _, cmd := range cmds {
 		if cmd.HideInHelp {
-			continue
+			if !c.Router.userHasBypassPermissions(c.Message.Author) { //TODO: have this be a permission node check instead
+				continue
+			}
 		}
 		indent := strings.Repeat("  ", depth)
 		helpText := cmd.SPrintHelp()
@@ -141,7 +143,7 @@ func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int
 	}
 }
 
-func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
+func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, requiredNode string) bool {
 	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
 	if util.DebugError(err) {
 		log.Error().Err(err).Msg("An error has occurred.")
@@ -153,7 +155,7 @@ func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *dis
 		return true
 	}
 
-	return r.PermSystem.UserHasPermissionNode(gm, nodeIdentifier)
+	return r.PermSystem.UserHasPermissionNode(gm, requiredNode)
 }
 
 func (r *Router) userHasBypassPermissions(user *discordgo.User) bool {

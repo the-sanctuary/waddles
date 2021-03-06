@@ -10,7 +10,7 @@ import (
 
 var ping *cmd.Command = &cmd.Command{
 	Name:        "ping",
-	Aliases:     *&[]string{"pong"},
+	Aliases:     []string{"pong"},
 	Description: "This pongs your ping(pong)!",
 	Usage:       "ping [count <num>]",
 	Handler: func(c *cmd.Context) {

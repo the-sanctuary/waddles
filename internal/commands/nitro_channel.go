@@ -12,7 +12,7 @@ import (
 
 var nitroChannel *cmd.Command = &cmd.Command{
 	Name:        "channel",
-	Aliases:     *&[]string{"c"},
+	Aliases:     []string{"c"},
 	Description: "control your voice channel",
 	Usage:       "channel (register|release)",
 	SubCommands: []*cmd.Command{nitroChannelRegister, nitroChannelRelease},
@@ -31,7 +31,7 @@ var nitroChannel *cmd.Command = &cmd.Command{
 
 var nitroChannelRelease *cmd.Command = &cmd.Command{
 	Name:        "release",
-	Aliases:     *&[]string{"rl"},
+	Aliases:     []string{"rl"},
 	Description: "release your voice channel",
 	Usage:       "release",
 	Handler: func(c *cmd.Context) {

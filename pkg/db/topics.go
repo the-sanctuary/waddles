@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	ChannelTypeText  = iota
-	ChannelTypeVoice = iota
+	ChannelTypeText = iota
+	ChannelTypeVoice
 )
 
 type Topic struct {
@@ -15,7 +15,7 @@ type Topic struct {
 	Channels    []TopicChannel `gorm:"foreignKey:TopicID"`
 	TopicUsers  []TopicUser    `gorm:"foreignKey:TopicID"`
 	Tags        []*TopicTag    `gorm:"many2many:topic_tag;"`
-	Archived    bool           `gorm:"index"`
+	Archived    bool           `gorm:"index,default:false"`
 	Slug        string         `gorm:"unique"`
 	Name        string
 	Description string
