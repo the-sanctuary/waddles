@@ -3,7 +3,6 @@ name: Feature request
 about: Suggest an idea for this project
 title: 'Feature: [SHORT FEATURE DESCRIPTION]'
 labels: enhancement
-assignees: cebarks
 
 ---
 
