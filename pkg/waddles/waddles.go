@@ -5,6 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/internal/commands"
 	"github.com/the-sanctuary/waddles/internal/handlers"
+	"github.com/the-sanctuary/waddles/internal/parser"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 
@@ -45,7 +46,11 @@ func (w *Waddles) Run() {
 
 	permSystem := permissions.BuildPermissionSystem(cfg.Cfg().GetConfigFileLocation("permissions.toml"))
 
-	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg())
+	// Build the parser
+	parser := parser.BuildParser("\"")
+
+	// Build the router
+	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg(), &parser)
 
 	r.RegisterCommands(commands.Commands())
 
