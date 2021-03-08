@@ -24,7 +24,7 @@ type Router struct {
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router { //TODO: Merge this with RegisterCommands()
 	r := Router{
 		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,
@@ -195,5 +195,5 @@ func (r *Router) generatePermissionNodes() {
 	}
 }
 
-//TODO properly handle being pinged
+//TODO: properly handle being pinged
 func handlePing(session *discordgo.Session, message *discordgo.MessageCreate) {}

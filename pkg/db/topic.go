@@ -11,14 +11,14 @@ const (
 
 type Topic struct {
 	gorm.Model
-	DiscordID   string
-	Channels    []TopicChannel `gorm:"foreignKey:TopicID"`
-	TopicUsers  []TopicUser    `gorm:"foreignKey:TopicID"`
-	Tags        []*TopicTag    `gorm:"many2many:topic_tag;"`
-	Archived    bool           `gorm:"index,default:false"`
-	Slug        string         `gorm:"unique"`
-	Name        string
-	Description string
+	DiscordRoleID string
+	Channels      []TopicChannel `gorm:"foreignKey:TopicID"`
+	TopicUsers    []TopicUser    `gorm:"foreignKey:TopicID"`
+	Tags          []*TopicTag    `gorm:"many2many:topic_tag;"`
+	Archived      bool           `gorm:"index,default:false"`
+	Slug          string         `gorm:"unique"`
+	Name          string
+	Description   string
 }
 
 type TopicTag struct {

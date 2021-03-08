@@ -1,6 +1,12 @@
 package commands
 
-import "github.com/the-sanctuary/waddles/pkg/cmd"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/the-sanctuary/waddles/pkg/cmd"
+	"github.com/the-sanctuary/waddles/pkg/db"
+)
 
 var topics *cmd.Command = &cmd.Command{
 	Name:        "topics",
@@ -15,7 +21,22 @@ var topicsList *cmd.Command = &cmd.Command{
 	Aliases:     []string{"l"},
 	Description: "List all the available topics",
 	Usage:       "list",
-	Handler:     func(c *cmd.Context) {},
+	Handler: func(c *cmd.Context) {
+		allTopics := db.TopicFindAll(c.DB())
+
+		if len(allTopics) < 1 {
+			c.ReplyString("There are no topics.")
+			return
+		}
+
+		builder := strings.Builder{}
+
+		for _, topic := range allTopics {
+			builder.WriteString(fmt.Sprintf("%s (%s) - %s \n", topic.Name, topic.Slug, topic.Description))
+		}
+
+		c.ReplyString(builder.String())
+	},
 }
 var topicsAdd *cmd.Command = &cmd.Command{
 	Name:        "add",
