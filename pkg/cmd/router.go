@@ -8,9 +8,9 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 
-	"github.com/the-sanctuary/waddles/internal/parser"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/db"
+	"github.com/the-sanctuary/waddles/pkg/parser"
 	"github.com/the-sanctuary/waddles/pkg/permissions"
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
@@ -133,6 +133,7 @@ func defaultHandler(ctx *Context) {
 	ctx.ReplyString(builder.String())
 }
 
+// RBuildHelp helps build :P
 func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int) {
 	for _, cmd := range cmds {
 		if cmd.HideInHelp {

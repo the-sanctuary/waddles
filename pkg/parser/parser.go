@@ -27,3 +27,17 @@ func (p *Parser) Parse(raw string, tree *CmdTree) {
 	tree.Data = raw
 	tree.Trees = []*CmdTree{c1, c2}
 }
+
+// func isCmdOrSubCmd(cmd string, commands []cmd.Command) bool {
+// 	for _, command := range commands {
+// 		if command.Name == cmd {
+// 			return true
+// 		}
+// 		for _, subCommand := range command.SubCommands {
+// 			if subCommand.Name == cmd {
+// 				return true
+// 			}
+// 		}
+// 	}
+// 	return false
+// }

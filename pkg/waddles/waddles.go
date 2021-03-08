@@ -5,9 +5,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/the-sanctuary/waddles/internal/commands"
 	"github.com/the-sanctuary/waddles/internal/handlers"
-	"github.com/the-sanctuary/waddles/internal/parser"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/cmd"
+	"github.com/the-sanctuary/waddles/pkg/parser"
 
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/handler"
