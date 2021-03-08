@@ -47,7 +47,9 @@ func (w *Waddles) Run() {
 	permSystem := permissions.BuildPermissionSystem(cfg.Cfg().GetConfigFileLocation("permissions.toml"))
 
 	// Build the parser
-	parser := parser.BuildParser("\"")
+	parser := parser.BuildParser([]string{"\"", "'", "<>", "()"})
+	log.Trace().Msgf("String Delims: %s", parser.StringDelims)
+	log.Trace().Msgf("String Delims: %s", parser.LRDelims)
 
 	// Build the router
 	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg(), &parser)
