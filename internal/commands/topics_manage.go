@@ -30,14 +30,14 @@ var topicsManageAdd *cmd.Command = &cmd.Command{
 
 		slug := c.Args[0]
 		name := c.Args[1]
-		tags := c.Args[2]
-		description := c.Args[3:]
+		tags := strings.Split(c.Args[2], ",")
+		description := strings.Join(c.Args[3:], " ")
 
 		topic := db.Topic{
 			Slug:        slug,
 			Name:        name,
-			Description: strings.Join(description, " "),
-			Tags:        tagsFromSlice(strings.Split(tags, ",")),
+			Description: description,
+			Tags:        tagsFromSlice(c.DB(), tags),
 		}
 
 		tx := db.Instance.Create(&topic)
@@ -50,11 +50,15 @@ var topicsManageAdd *cmd.Command = &cmd.Command{
 	},
 }
 
-func tagsFromSlice(tags []string) []*db.TopicTag {
+func tagsFromSlice(wdb *db.WadlDB, tags []string) []*db.TopicTag {
 	var topicTags []*db.TopicTag
 
 	for _, tag := range tags {
-		topicTags = append(topicTags, &db.TopicTag{Name: tag})
+		topicTag := &db.TopicTag{Name: tag}
+
+		wdb.Where(topicTag).FirstOrCreate(&topicTag)
+
+		topicTags = append(topicTags, topicTag)
 	}
 
 	return topicTags

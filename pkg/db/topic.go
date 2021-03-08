@@ -14,8 +14,8 @@ type Topic struct {
 	DiscordRoleID string
 	Channels      []TopicChannel `gorm:"foreignKey:TopicID"`
 	TopicUsers    []TopicUser    `gorm:"foreignKey:TopicID"`
-	Tags          []*TopicTag    `gorm:"many2many:topic_tag;"`
-	Archived      bool           `gorm:"index,default:false"`
+	Tags          []*TopicTag    `gorm:"many2many:topictag_topic;"`
+	Archived      bool           `gorm:"index,default:false;"`
 	Slug          string         `gorm:"unique"`
 	Name          string
 	Description   string
@@ -23,9 +23,9 @@ type Topic struct {
 
 type TopicTag struct {
 	gorm.Model
-	Name        string `gorm:"index"`
+	Name        string `gorm:"uniqueIndex"`
 	Description string
-	Topics      []*Topic `gorm:"many2many:topic_tag;"`
+	Topics      []*Topic `gorm:"many2many:topictag_topic;"`
 }
 
 type TopicChannel struct {

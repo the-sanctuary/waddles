@@ -9,6 +9,18 @@ func TopicFindAll(db *WadlDB) []Topic {
 	return topics
 }
 
+func TopicFindAllForUser(db *WadlDB, User *User) []Topic {
+	var topics []Topic
+
+	db.
+		Joins("topic_tag").
+		Joins("topic_tags").
+		Where("").
+		Find(&topics)
+
+	return topics
+}
+
 func TopicFindById(db *WadlDB, id int) Topic {
 	var topic Topic
 
