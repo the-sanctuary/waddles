@@ -50,20 +50,6 @@ var topicsManageAdd *cmd.Command = &cmd.Command{
 	},
 }
 
-func tagsFromSlice(wdb *db.WadlDB, tags []string) []*db.TopicTag {
-	var topicTags []*db.TopicTag
-
-	for _, tag := range tags {
-		topicTag := &db.TopicTag{Name: tag}
-
-		wdb.Where(topicTag).FirstOrCreate(&topicTag)
-
-		topicTags = append(topicTags, topicTag)
-	}
-
-	return topicTags
-}
-
 var topicsManageDelete *cmd.Command = &cmd.Command{
 	Name:        "delete",
 	Aliases:     []string{"d"},
@@ -102,4 +88,18 @@ var topicsManageEdit *cmd.Command = &cmd.Command{
 	Description: "Edit a topic",
 	Usage:       "edit <topic-slug> (slug|name|description|tags|archive)",
 	Handler:     func(c *cmd.Context) {},
+}
+
+func tagsFromSlice(wdb *db.WadlDB, tags []string) []*db.TopicTag {
+	var topicTags []*db.TopicTag
+
+	for _, tag := range tags {
+		topicTag := &db.TopicTag{Name: tag}
+
+		wdb.Where(topicTag).FirstOrCreate(&topicTag)
+
+		topicTags = append(topicTags, topicTag)
+	}
+
+	return topicTags
 }
