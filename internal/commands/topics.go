@@ -105,7 +105,7 @@ var topicsRemove *cmd.Command = &cmd.Command{
 			User:  db.User{DiscordID: c.Message.Author.ID},
 		}
 
-		c.DB().Debug().Where(&topicUser).Delete(&topicUser)
+		c.DB().Where(&topicUser).Delete(&topicUser)
 		c.ReplyStringf("You have unsubscribed from the `%s (%s)` topic.", topic.Name, topic.Slug)
 	},
 }
