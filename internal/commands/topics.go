@@ -57,7 +57,7 @@ var topicsSubscribed *cmd.Command = &cmd.Command{
 		}
 
 		if len(allTopics) < 1 {
-			c.ReplyString("There are no topics you are subscribed to.")
+			c.ReplyString("You aren't subscribed to any topics.")
 			return
 		}
 
@@ -119,7 +119,7 @@ var topicsAdd *cmd.Command = &cmd.Command{
 }
 var topicsRemove *cmd.Command = &cmd.Command{
 	Name:        "remove",
-	Aliases:     []string{"a"},
+	Aliases:     []string{"r"},
 	Description: "Unsubscribe from a topic.",
 	Usage:       "remove <topic-slug>",
 	Handler: func(c *cmd.Context) {
