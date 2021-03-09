@@ -27,15 +27,6 @@ func TopicFindAllForUser(db *WadlDB, user *User) ([]*Topic, error) {
 	return topics, tx.Error
 }
 
-func TopicFindById(db *WadlDB, id int) (*Topic, error) {
-	var topic *Topic
-
-	tx := db.
-		First(&topic, id)
-
-	return topic, tx.Error
-}
-
 func TopicFindBySlug(db *WadlDB, slug string) (Topic, error) {
 	var topic Topic
 

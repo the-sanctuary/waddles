@@ -109,9 +109,8 @@ var topicsAdd *cmd.Command = &cmd.Command{
 		if topicUser.Active {
 			c.ReplyStringf("You are already subscribed to `%s (%s)`.", topic.Name, topic.Slug)
 			return
-		} else {
-			topicUser.Active = true
 		}
+		topicUser.Active = true
 
 		c.DB().Save(&topicUser)
 		c.ReplyStringf("You have been subscribed to `%s (%s)`.", topic.Name, topic.Slug)

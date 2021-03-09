@@ -5,6 +5,7 @@ import (
 
 	"github.com/the-sanctuary/waddles/pkg/cmd"
 	"github.com/the-sanctuary/waddles/pkg/db"
+	"gorm.io/gorm"
 )
 
 var topicsManage *cmd.Command = &cmd.Command{
@@ -87,7 +88,59 @@ var topicsManageEdit *cmd.Command = &cmd.Command{
 	Aliases:     []string{"e"},
 	Description: "Edit a topic",
 	Usage:       "edit <topic-slug> (slug|name|description|tags|archive)",
-	Handler:     func(c *cmd.Context) {},
+	Handler: func(c *cmd.Context) {
+		if len(c.Args) < 3 {
+			c.ReplyString("Invalid synax.")
+			return
+		}
+		slug := c.Args[0]
+
+		topic, err := db.TopicFindBySlug(c.DB(), slug)
+		if err == gorm.ErrRecordNotFound {
+			c.ReplyStringf("Error: Couldn't find topic: `%s`", slug)
+			return
+		} else if err != nil {
+			c.ReplyError(err)
+			return
+		}
+
+		target := c.Args[1]
+
+		switch target {
+		case "slug":
+			newSlug := c.Args[2]
+
+			_, err := db.TopicFindBySlug(c.DB(), newSlug)
+			if err == gorm.ErrRecordNotFound {
+				topic.Slug = newSlug
+			} else if err != nil {
+				c.ReplyError(err)
+			} else {
+				c.ReplyStringf("A topic already is using the slug: `%s`", newSlug)
+			}
+		case "name":
+			topic.Name = c.Args[2]
+		case "description":
+			topic.Description = strings.Join(c.Args[2:], " ")
+		case "tags":
+			//TODO: this should add/remove; not override completely.
+			// It instead should look like this: tags (add|delete) <tag>[,<tag>,...]
+			topic.Tags = tagsFromSlice(c.DB(), strings.Split(c.Args[3], ","))
+		case "archive":
+			topic.Archived = true
+		default:
+			c.ReplyStringf("Invalid target: `%v`", target)
+			return
+		}
+
+		tx := c.DB().Save(&topic)
+		if tx.Error != nil {
+			c.ReplyError(tx.Error)
+			return
+		}
+
+		c.ReplyStringf("Successfully updated value: `%s`", target)
+	},
 }
 
 func tagsFromSlice(wdb *db.WadlDB, tags []string) []*db.TopicTag {
