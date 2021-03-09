@@ -41,10 +41,10 @@ var topicsList *cmd.Command = &cmd.Command{
 }
 
 var topicsSubscribed *cmd.Command = &cmd.Command{
-	Name:        "list",
-	Aliases:     []string{"l"},
-	Description: "List all the available topics",
-	Usage:       "list",
+	Name:        "subscribed",
+	Aliases:     []string{"s"},
+	Description: "List your subscribed topics",
+	Usage:       "subscribed",
 	Handler: func(c *cmd.Context) {
 		allTopics := db.TopicFindAllForUser(c.DB(), &db.User{DiscordID: c.Message.Author.ID})
 
@@ -74,20 +74,19 @@ var topicsAdd *cmd.Command = &cmd.Command{
 		topic := db.TopicFindBySlug(c.DB(), slug)
 
 		topicUser := db.TopicUser{
-			Topic: topic,
-			User:  db.User{DiscordID: c.Message.Author.ID},
+			TopicID: int(topic.ID),
+			User:    db.User{DiscordID: c.Message.Author.ID},
 		}
 
 		tx := c.DB().First(&topicUser)
 
 		if tx.Error == gorm.ErrRecordNotFound {
 			c.DB().Create(&topicUser)
-			c.ReplyStringf("You have been subscribed to `%s`.", topic.Name)
+			c.ReplyStringf("You have been subscribed to `%s (%s)`.", topic.Name, topic.Slug)
 		} else if tx.Error != nil {
 			c.ReplyError(tx.Error)
-			return
 		} else {
-
+			c.ReplyStringf("You are already subscribed to `%s (%s)`.", topic.Name, topic.Slug)
 		}
 	},
 }
@@ -106,7 +105,7 @@ var topicsRemove *cmd.Command = &cmd.Command{
 			User:  db.User{DiscordID: c.Message.Author.ID},
 		}
 
-		c.DB().Delete(&topicUser)
-		c.ReplyStringf("You have been removed from the `%s (%s)` topic.", topic.Name, topic.Slug)
+		c.DB().Debug().Where(&topicUser).Delete(&topicUser)
+		c.ReplyStringf("You have unsubscribed from the `%s (%s)` topic.", topic.Name, topic.Slug)
 	},
 }

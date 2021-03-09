@@ -9,15 +9,19 @@ func TopicFindAll(db *WadlDB) []Topic {
 	return topics
 }
 
-func TopicFindAllForUser(db *WadlDB, User *User) []Topic {
-	var topics []Topic
+func TopicFindAllForUser(db *WadlDB, user *User) []Topic {
+	var topicUsers []TopicUser
 
 	db.
-		Joins("topic_tag").
-		Joins("topic_tags").
-		Where("").
-		Find(&topics)
+		Debug().
+		Where("topic_users.discord_id = ?", user.DiscordID).
+		Preload("Topic").
+		Find(&topicUsers)
 
+	var topics []Topic
+	for _, tu := range topicUsers {
+		topics = append(topics, tu.Topic)
+	}
 	return topics
 }
 
