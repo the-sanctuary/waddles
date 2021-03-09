@@ -41,4 +41,5 @@ type TopicUser struct {
 	User
 	TopicID int
 	Topic   Topic
+	Active  bool `gorm:"index,default:true;"`
 }

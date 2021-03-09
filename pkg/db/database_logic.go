@@ -1,45 +1,47 @@
 package db
 
-func TopicFindAll(db *WadlDB) []Topic {
-	var topics []Topic
+func TopicFindAll(db *WadlDB) ([]*Topic, error) {
+	var topics []*Topic
 
-	db.
+	tx := db.
 		Find(&topics)
 
-	return topics
+	return topics, tx.Error
 }
 
-func TopicFindAllForUser(db *WadlDB, user *User) []Topic {
-	var topicUsers []TopicUser
+func TopicFindAllForUser(db *WadlDB, user *User) ([]*Topic, error) {
+	var topicUsers []*TopicUser
 
-	db.
+	tx := db.
 		Debug().
 		Where("topic_users.discord_id = ?", user.DiscordID).
 		Preload("Topic").
 		Find(&topicUsers)
 
-	var topics []Topic
+	var topics []*Topic
+
 	for _, tu := range topicUsers {
-		topics = append(topics, tu.Topic)
+		topics = append(topics, &tu.Topic)
 	}
-	return topics
+
+	return topics, tx.Error
 }
 
-func TopicFindById(db *WadlDB, id int) Topic {
-	var topic Topic
+func TopicFindById(db *WadlDB, id int) (*Topic, error) {
+	var topic *Topic
 
-	db.
+	tx := db.
 		First(&topic, id)
 
-	return topic
+	return topic, tx.Error
 }
 
-func TopicFindBySlug(db *WadlDB, slug string) Topic {
+func TopicFindBySlug(db *WadlDB, slug string) (Topic, error) {
 	var topic Topic
 
-	db.
+	tx := db.
 		Where("slug = ?", slug).
 		First(&topic)
 
-	return topic
+	return topic, tx.Error
 }

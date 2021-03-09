@@ -62,7 +62,7 @@ func (ctx *Context) ReplyError(err error) bool {
 		// 	ctx.Session.ChannelMessageSend(st.ID, fmt.Sprintf("Error Report: ```%s```", err.Error()))
 		// }
 		ctx.ReplyString("An error occured. Check the log for details.")
-		util.DebugError(err)
+		// util.DebugError(err)
 		return true
 	}
 	return false
