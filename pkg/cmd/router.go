@@ -101,6 +101,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 				handler = defaultHandler
 			}
 
+			
 			handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
@@ -119,6 +120,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 func defaultHandler(ctx *Context) {
 	builder := strings.Builder{}
 
+	builder.WriteString("Available Subcommands:\n")
 	builder.WriteString("```\n")
 	RBuildHelp(ctx, &builder, ctx.Command.SubCommands, 0)
 	builder.WriteString("```")

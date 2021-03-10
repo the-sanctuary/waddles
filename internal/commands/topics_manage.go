@@ -87,10 +87,11 @@ var topicsManageEdit *cmd.Command = &cmd.Command{
 	Name:        "edit",
 	Aliases:     []string{"e"},
 	Description: "Edit a topic",
-	Usage:       "edit <topic-slug> (slug|name|description|tags|archive)",
+	Usage:       "edit <topic-slug> (slug|name|description|tags|archive) <new value>",
 	Handler: func(c *cmd.Context) {
 		if len(c.Args) < 3 {
 			c.ReplyString("Invalid synax.")
+			c.ReplyHelp()
 			return
 		}
 		slug := c.Args[0]
@@ -119,12 +120,32 @@ var topicsManageEdit *cmd.Command = &cmd.Command{
 				c.ReplyStringf("A topic already is using the slug: `%s`", newSlug)
 			}
 		case "name":
-			topic.Name = c.Args[2]
+			topic.Name = strings.Join(c.Args[2:], " ")
 		case "description":
 			topic.Description = strings.Join(c.Args[2:], " ")
 		case "tags":
-			//TODO: this should add/remove; not override completely.
-			// It instead should look like this: tags (add|delete) <tag>[,<tag>,...]
+			targetTag := c.Args[3]
+
+			switch subTarget := c.Args[2]; subTarget {
+			case "add":
+				topicTag := &db.TopicTag{Name: targetTag}
+
+				c.DB().Where(topicTag).FirstOrCreate(&topicTag)
+				topic.Tags = append(topic.Tags, topicTag)
+			case "remove":
+				topicTag := &db.TopicTag{Name: targetTag}
+
+				if tx := c.DB().Where(topicTag).FirstOrCreate(&topicTag); tx.Error != nil {
+					c.ReplyError(err)
+					return
+				}
+
+				err := c.DB().Model(&topic).Association("TopicTags").Delete(&topicTag)
+				if err != nil {
+					c.ReplyError(err)
+					return
+				}
+			}
 			topic.Tags = tagsFromSlice(c.DB(), strings.Split(c.Args[3], ","))
 		case "archive":
 			topic.Archived = true

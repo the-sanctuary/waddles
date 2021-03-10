@@ -11,7 +11,7 @@ import (
 
 var topics *cmd.Command = &cmd.Command{
 	Name:        "topics",
-	Aliases:     []string{""},
+	Aliases:     []string{"t"},
 	Description: "View/Manage your topic subscriptions on this server",
 	Usage:       "topics (add|list|remove)",
 	SubCommands: []*cmd.Command{topicsList, topicsAdd, topicsSubscribed, topicsRemove, topicsManage},
