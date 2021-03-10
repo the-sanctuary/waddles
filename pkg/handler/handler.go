@@ -12,5 +12,10 @@ func TraceAllMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	// Ignore all messages from bots
+	if m.Author.Bot {
+		return
+	}
+
 	log.Trace().Msgf("Message Recieved: %s", m.Message.Content)
 }

@@ -54,4 +54,9 @@ func (wdb *WadlDB) Migrate() {
 	wdb.AutoMigrate(&UserActivity{})
 	wdb.AutoMigrate(&NitroUserChannel{})
 	wdb.AutoMigrate(&NicknameUpdate{})
+
+	wdb.AutoMigrate(&Topic{})
+	wdb.AutoMigrate(&TopicChannel{})
+	wdb.AutoMigrate(&TopicUser{})
+	wdb.AutoMigrate(&TopicTag{})
 }

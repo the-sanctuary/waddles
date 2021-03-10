@@ -24,7 +24,7 @@ type Router struct {
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router { //TODO: Merge this with RegisterCommands()
 	r := Router{
 		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,
@@ -52,7 +52,7 @@ func (r *Router) RegisterCommands(cmds []*Command) {
 
 //Handler returns the func that deals with command delegates execution to command
 func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
-	return func(session *discordgo.Session, message *discordgo.MessageCreate) {
+	return func(session *discordgo.Session, message *discordgo.MessageCreate) { // TODO: This doesn't need to return a function, we can add it as a handler directly
 		log.Trace().Msg("Entering Router Handler")
 		defer log.Trace().Msg("Exiting Router Handler")
 
@@ -101,6 +101,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 				handler = defaultHandler
 			}
 
+			
 			handler(&ctx)
 
 			//Update UserActivity entry's CommandCount
@@ -119,6 +120,7 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 func defaultHandler(ctx *Context) {
 	builder := strings.Builder{}
 
+	builder.WriteString("Available Subcommands:\n")
 	builder.WriteString("```\n")
 	RBuildHelp(ctx, &builder, ctx.Command.SubCommands, 0)
 	builder.WriteString("```")
@@ -129,7 +131,9 @@ func defaultHandler(ctx *Context) {
 func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int) {
 	for _, cmd := range cmds {
 		if cmd.HideInHelp {
-			continue
+			if !c.Router.userHasBypassPermissions(c.Message.Author) { //TODO: have this be a permission node check instead
+				continue
+			}
 		}
 		indent := strings.Repeat("  ", depth)
 		helpText := cmd.SPrintHelp()
@@ -141,7 +145,7 @@ func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int
 	}
 }
 
-func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, nodeIdentifier string) bool {
+func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *discordgo.User, requiredNode string) bool {
 	gm, err := session.GuildMember(r.Config.Wadl.GuildID, user.ID)
 	if util.DebugError(err) {
 		log.Error().Err(err).Msg("An error has occurred.")
@@ -153,7 +157,7 @@ func (r *Router) userHasCorrectPermissions(session *discordgo.Session, user *dis
 		return true
 	}
 
-	return r.PermSystem.UserHasPermissionNode(gm, nodeIdentifier)
+	return r.PermSystem.UserHasPermissionNode(gm, requiredNode)
 }
 
 func (r *Router) userHasBypassPermissions(user *discordgo.User) bool {
@@ -193,5 +197,5 @@ func (r *Router) generatePermissionNodes() {
 	}
 }
 
-//TODO properly handle being pinged
+//TODO: properly handle being pinged
 func handlePing(session *discordgo.Session, message *discordgo.MessageCreate) {}

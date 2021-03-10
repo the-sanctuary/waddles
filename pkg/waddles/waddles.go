@@ -24,7 +24,7 @@ type Waddles struct {
 //Run reads the Config, initializes all needed systems, opens the discord api session, and registers the command router and other handlers.
 func (w *Waddles) Run() {
 	util.InitializeLogging()
-	cfg.Cfg()
+	cfg.ReloadCfgFromDisk()
 	util.SetupLogging()
 
 	var err error

@@ -44,9 +44,10 @@ func SetupLogging() {
 
 // DebugError handles an error with errlog (& zerolog)
 func DebugError(err error) bool {
-	isNil := errorLogger.Debug(err)
-	if !isNil {
-		log.Error().Err(err)
+	if err != nil {
+		// log.Error().Err(err)
+		errorLogger.Debug(err)
+		return true
 	}
-	return isNil
+	return false
 }

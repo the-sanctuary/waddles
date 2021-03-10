@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
@@ -55,12 +54,13 @@ func (ctx *Context) ReplyHelp() *discordgo.Message {
 //ReplyError returns a generic error to the user
 func (ctx *Context) ReplyError(err error) bool {
 	if err != nil {
-		authorID := ctx.Message.Author.ID
-		if util.SliceContains(cfg.ReadConfig().Permissions.DebugUsers, authorID) {
-			st, err := ctx.Session.UserChannelCreate(authorID)
-			util.DebugError(err)
-			ctx.Session.ChannelMessageSend(st.ID, fmt.Sprintf("Error Report: ```%s```", err.Error()))
-		}
+		//TODO: if user is a debugUser, send them a PM with the error itself instead of just a generic response to the channel.
+		// authorID := ctx.Message.Author.ID
+		// if util.SliceContains(cfg.ReadConfig().Permissions.DebugUsers, authorID) {
+		// 	st, err := ctx.Session.UserChannelCreate(authorID)
+		// 	util.DebugError(err)
+		// 	ctx.Session.ChannelMessageSend(st.ID, fmt.Sprintf("Error Report: ```%s```", err.Error()))
+		// }
 		ctx.ReplyString("An error occured. Check the log for details.")
 		util.DebugError(err)
 		return true
