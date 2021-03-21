@@ -14,5 +14,3 @@ func BuildLexer() Lexer {
 	}
 	return lex
 }
-
-func addAllCommands()
