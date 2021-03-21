@@ -76,6 +76,8 @@ var updateGatekeeper *cmd.Command = &cmd.Command{
 			"You may decline to accept these rules, but you will be not be granted access to the server, and will instead be kicked.\n\n" +
 			"Please type `accept`, to accept the rules above, or `decline`, to leave the server.")
 
+		log.Trace().Msgf("%s", msg)
+
 		// Send the message to the channel specified in the gatekeeper config
 		c.Session.ChannelMessageSend(config.Gatekeeper.ChannelID, msg)
 	},
