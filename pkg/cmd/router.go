@@ -10,6 +10,7 @@ import (
 
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/db"
+	"github.com/the-sanctuary/waddles/pkg/parser"
 	"github.com/the-sanctuary/waddles/pkg/permissions"
 	"github.com/the-sanctuary/waddles/pkg/util"
 )
@@ -21,15 +22,17 @@ type Router struct {
 	WadlDB     *db.WadlDB
 	PermSystem *permissions.PermissionSystem
 	Config     *cfg.Config
+	Parser     *parser.Parser
 }
 
 //BuildRouter returns a fully built router stuct with commands preregistered
-func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config) Router {
+func BuildRouter(wdb *db.WadlDB, permSystem *permissions.PermissionSystem, cfg *cfg.Config, parser *parser.Parser) Router {
 	r := Router{
 		Prefix:     cfg.Wadl.Prefix,
 		WadlDB:     wdb,
 		PermSystem: permSystem,
 		Config:     cfg,
+		Parser:     parser,
 	}
 
 	return r
@@ -85,6 +88,10 @@ func (r *Router) Handler() func(*discordgo.Session, *discordgo.MessageCreate) {
 		split := strings.Split(message.Content[len(r.Prefix):], " ")
 		correct, cmd := triggerCheck(split[0], r.Commands)
 
+		tree := parser.BuildCmdTree()
+		r.Parser.Parse(split[0], tree)
+		tree.LRTraverse()
+
 		if correct {
 			deepestCmd, args, node := findDeepestCommand(cmd, split, cmd.Name)
 
@@ -126,6 +133,7 @@ func defaultHandler(ctx *Context) {
 	ctx.ReplyString(builder.String())
 }
 
+// RBuildHelp helps build :P
 func RBuildHelp(c *Context, builder *strings.Builder, cmds []*Command, depth int) {
 	for _, cmd := range cmds {
 		if cmd.HideInHelp {

@@ -7,6 +7,7 @@ import (
 	"github.com/the-sanctuary/waddles/internal/handlers"
 	"github.com/the-sanctuary/waddles/pkg/cfg"
 	"github.com/the-sanctuary/waddles/pkg/cmd"
+	"github.com/the-sanctuary/waddles/pkg/parser"
 
 	"github.com/the-sanctuary/waddles/pkg/db"
 	"github.com/the-sanctuary/waddles/pkg/handler"
@@ -45,7 +46,13 @@ func (w *Waddles) Run() {
 
 	permSystem := permissions.BuildPermissionSystem(cfg.Cfg().GetConfigFileLocation("permissions.toml"))
 
-	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg())
+	// Build the parser
+	parser := parser.BuildParser([]string{"\"", "'", "<>", "()"})
+	log.Trace().Msgf("String Delims: %s", parser.StringDelims)
+	log.Trace().Msgf("String Delims: %s", parser.LRDelims)
+
+	// Build the router
+	r := cmd.BuildRouter(w.Database, &permSystem, cfg.Cfg(), &parser)
 
 	r.RegisterCommands(commands.Commands())
 

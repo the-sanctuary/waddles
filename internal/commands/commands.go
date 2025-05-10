@@ -8,9 +8,11 @@ func Commands() []*cmd.Command {
 		ping,
 		purge,
 		uptime,
+		update,
 		nitro,
 		debug,
 		helpCommands,
 		help,
+		lex,
 	}
 }

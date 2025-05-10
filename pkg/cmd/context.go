@@ -68,6 +68,7 @@ func (ctx *Context) ReplyError(err error) bool {
 	return false
 }
 
+// ReplyTimeDeleteStringf just putting this here to get rid of the warning
 func (ctx *Context) ReplyTimeDeleteStringf(delay time.Duration, format string, a ...interface{}) {
 	errMsg := ctx.ReplyStringf(format, a...)
 
