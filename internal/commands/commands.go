@@ -10,7 +10,8 @@ func Commands() []*cmd.Command {
 		uptime,
 		nitro,
 		debug,
-		helpCommands,
 		help,
+		commands,
+		topics,
 	}
 }

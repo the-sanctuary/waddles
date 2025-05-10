@@ -16,7 +16,7 @@ var help *cmd.Command = &cmd.Command{
 	},
 }
 
-var helpCommands *cmd.Command = &cmd.Command{
+var commands *cmd.Command = &cmd.Command{
 	Name:        "commands",
 	Aliases:     []string{"c"},
 	Description: "list of commands",

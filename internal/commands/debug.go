@@ -11,7 +11,7 @@ var debug *cmd.Command = &cmd.Command{
 	Name:        "debug",
 	Aliases:     []string{"dbg"},
 	Description: "bot debug interface",
-	Usage:       "",
+	Usage:       "debug (listPerms|dumpPerms)",
 	HideInHelp:  true,
 	SubCommands: []*cmd.Command{debugDumpPerms, debugListPerms, update},
 }
@@ -20,7 +20,7 @@ var debugListPerms *cmd.Command = &cmd.Command{
 	Name:        "listPerms",
 	Aliases:     []string{""},
 	Description: "lists text representation of permission system",
-	Usage:       "",
+	Usage:       "listPerms",
 	Handler: func(c *cmd.Context) {
 		tre := &c.Router.PermSystem.Tree
 
@@ -67,7 +67,7 @@ var debugDumpPerms *cmd.Command = &cmd.Command{
 	Name:        "dumpPerms",
 	Aliases:     []string{""},
 	Description: "dumps raw PermissionSystem struct",
-	Usage:       "",
+	Usage:       "dumpPerms",
 	Handler: func(c *cmd.Context) {
 		tre := &c.Router.PermSystem.Tree
 		c.ReplyStringf("```%+v```", tre)

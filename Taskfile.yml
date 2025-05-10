@@ -12,9 +12,10 @@ tasks:
 
   postgres-reset:
     desc: reset the postgres container's data volume
-    deps: [postgres-down]
     cmds:
+      - task: postgres-down
       - podman volume rm deploy_postgres_data
+      - task: postgres-up
 
   postgres-down:
     desc: take down a container instance of postgres for development with 'task run'
